@@ -1,12 +1,13 @@
 import Link from "next/link";
 
-import { getActivities, getFaqs, getShifts } from "@/lib/payload/fetchers";
+import { getActivities, getFaqs, getPlans, getShifts } from "@/lib/payload/fetchers";
 
 export default async function HomePage() {
-  const [faqs, activities, shifts] = await Promise.all([
+  const [faqs, activities, shifts, plans] = await Promise.all([
     getFaqs(),
     getActivities(),
     getShifts(),
+    getPlans(),
   ]);
 
   return (
@@ -311,42 +312,19 @@ export default async function HomePage() {
             </p>
           </div>
           <div className="plans">
-            <Plan
-              eyebrow="базовый"
-              name="Палаточник"
-              price="1 400"
-              items={[
-                "Палатка «Сосна» или своя",
-                "Питание 3 раза в день",
-                "Все программы и активности",
-                "Костёр, баня, трансфер из Минска",
-              ]}
-              btnClass="ghost"
-            />
-            <Plan
-              featured
-              eyebrow="всё включено"
-              name="Семейный"
-              price="2 200"
-              items={[
-                "Глэмпинг или домик «Грибок»",
-                "Всё из пакета «Палаточник»",
-                "Детская программа с сопровождением",
-                "Индивидуальная керамика + фото-пакет",
-              ]}
-            />
-            <Plan
-              eyebrow="с комфортом"
-              name="Приватный"
-              price="3 400"
-              items={[
-                "Студия «Тишина» или шатёр",
-                "Всё из «Семейного»",
-                "Персональный каноэ-тур на рассвете",
-                "Массаж, сауна по расписанию",
-              ]}
-              btnClass="ghost"
-            />
+            {plans.map((p) => (
+              <Plan
+                key={p.id}
+                eyebrow={p.eyebrow}
+                name={p.name}
+                price={p.price}
+                perUnit={p.perUnit ?? "р / человек"}
+                nights={p.nights ?? "за смену · 10 дней"}
+                items={p.items.map((i) => i.text)}
+                featured={p.featured ?? false}
+                btnClass={p.btnClass ?? undefined}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -484,21 +462,23 @@ type PlanProps = {
   eyebrow: string;
   name: string;
   price: string;
+  perUnit?: string;
+  nights?: string;
   items: string[];
   featured?: boolean;
   btnClass?: string;
 };
 
-function Plan({ eyebrow, name, price, items, featured, btnClass }: PlanProps) {
+function Plan({ eyebrow, name, price, perUnit, nights, items, featured, btnClass }: PlanProps) {
   return (
     <div className={`plan ${featured ? "featured" : ""}`}>
       {featured && <span className="plan-ribbon">★ любимый выбор</span>}
       <div className="plan-eyebrow">{eyebrow}</div>
       <h3 className="plan-name">{name}</h3>
       <div className="plan-price">
-        {price} <span>р / человек</span>
+        {price} <span>{perUnit ?? "р / человек"}</span>
       </div>
-      <div className="plan-nights">за смену · 10 дней</div>
+      <div className="plan-nights">{nights ?? "за смену · 10 дней"}</div>
       <ul className="plan-list">
         {items.map((it) => (
           <li key={it}>{it}</li>
