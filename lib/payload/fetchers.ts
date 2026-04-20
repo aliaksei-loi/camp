@@ -341,3 +341,78 @@ export const getHome = async (): Promise<Home> => {
   });
   return HomeSchema.parse(doc);
 };
+
+// ---------- About page global ----------
+
+const AboutPageSchema = z.object({
+  hero: z
+    .object({
+      eyebrow: TextLike,
+      titlePart1: TextLike,
+      titlePart2: TextLike,
+      titlePart3: TextLike,
+      sub: TextLike,
+    })
+    .nullish(),
+  photoCard: z
+    .object({
+      image: z.union([z.string(), MediaRefSchema]).nullish(),
+      caption: TextLike,
+    })
+    .nullish(),
+  storySections: z
+    .array(
+      z.object({
+        id: z.string().nullish(),
+        heading: z.string(),
+        body: z.string(),
+        pullQuote: TextLike,
+      }),
+    )
+    .default([]),
+  valuesHead: z.object({ eyebrow: TextLike, title: TextLike }).nullish(),
+  values: z
+    .array(
+      z.object({
+        id: z.string().nullish(),
+        num: z.number(),
+        titleLine1: z.string(),
+        titleLine2: TextLike,
+        text: z.string(),
+      }),
+    )
+    .default([]),
+  teamHead: z.object({ eyebrow: TextLike, title: TextLike }).nullish(),
+  numbers: z
+    .array(
+      z.object({
+        id: z.string().nullish(),
+        value: z.string(),
+        label: z.string(),
+      }),
+    )
+    .default([]),
+  manifesto: z
+    .array(
+      z.object({
+        id: z.string().nullish(),
+        text: z.string(),
+        emphasized: z.boolean().nullish(),
+      }),
+    )
+    .default([]),
+});
+
+export type AboutPage = z.infer<typeof AboutPageSchema>;
+
+export const getAboutPage = async (): Promise<AboutPage> => {
+  const { isEnabled: draft } = await draftMode();
+  const payload = await getPayload({ config });
+  const doc = await payload.findGlobal({
+    slug: "about-page",
+    draft,
+    depth: 1,
+    overrideAccess: draft,
+  });
+  return AboutPageSchema.parse(doc);
+};

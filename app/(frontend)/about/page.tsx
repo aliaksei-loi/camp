@@ -1,75 +1,71 @@
 import type { Metadata } from "next";
+import { Fragment } from "react";
 
 import { CmsImage } from "@/components/CmsImage";
-import { getTeamMembers } from "@/lib/payload/fetchers";
+import { getAboutPage, getTeamMembers } from "@/lib/payload/fetchers";
 
 export const metadata: Metadata = {
   title: "Belcreation — о нас",
 };
 
 export default async function AboutPage() {
-  const team = await getTeamMembers();
+  const [about, team] = await Promise.all([getAboutPage(), getTeamMembers()]);
+
+  const hero = about.hero ?? {};
+  const photoCard = about.photoCard ?? {};
+  const valuesHead = about.valuesHead ?? {};
+  const teamHead = about.teamHead ?? {};
+  const photoCardImage = typeof photoCard.image === "object" ? photoCard.image : null;
 
   return (
     <>
       <section className="about-hero" data-screen-label="01 О нас — заголовок">
-        <span className="eyebrow">★ о нас ★</span>
+        {hero.eyebrow && <span className="eyebrow">{hero.eyebrow}</span>}
         <h1>
-          Мы — это семья, <span className="inline-img" data-ph="kids" data-seed="71" /> которая однажды
+          {hero.titlePart1}
+          <span className="inline-img" data-ph="kids" data-seed="71" />
+          {hero.titlePart2}
           <br />
-          поехала в лес и забыла <span className="inline-img" data-ph="campfire" data-seed="72" /> вернуться.
+          <span className="inline-img" data-ph="campfire" data-seed="72" />
+          {hero.titlePart3}
         </h1>
-        <p>Belcreation вырос из отпуска 2019 года, который затянулся на семь лет.</p>
+        {hero.sub && <p>{hero.sub}</p>}
       </section>
 
       <div className="about-photo">
         <div className="about-photo-card" data-ph="lake" data-seed="70">
+          <CmsImage media={photoCardImage} fill sizes="800px" />
           <div className="stripes-overlay" />
-          <div className="caption-sticker">первое лето, 2019</div>
+          {photoCard.caption && <div className="caption-sticker">{photoCard.caption}</div>}
         </div>
       </div>
 
       <section className="story" data-screen-label="02 История">
-        <h3>Как всё началось.</h3>
-        <p>
-          Летом 2019-го Катя и Артём уехали с двумя детьми на Нарочь на две недели. Поставили палатку, сварили суп,
-          посидели у костра. Потом пришли друзья. Потом — друзья друзей. К концу августа вокруг костра сидело 20
-          человек, и все говорили: «а давайте ещё в следующем году».
-        </p>
-        <p className="pull">
-          Оказалось, что взрослым тоже очень нужны каникулы. Такие, чтобы не было расписания, не было wi-fi и никто не
-          спрашивал, чем накормить ребёнка.
-        </p>
-        <h3>Что мы делаем сейчас.</h3>
-        <p>
-          Belcreation — это <em>шесть смен по 10 дней</em> каждое лето, на берегу озера Нарочь. У нас 40 палаток и
-          домиков, команда из 14 человек, два повара, ботаник, инструктор по каноэ и детская команда из педагогов, а не
-          аниматоров.
-        </p>
-        <p>
-          Мы не хотим быть отелем. Мы хотим быть местом, где дети учатся собирать чернику, а родители —{" "}
-          <em>не делать ничего</em> и не чувствовать за это вину.
-        </p>
-        <h3>Чего мы не делаем.</h3>
-        <p>
-          У нас нет анимации в костюмах, аквапарка, мини-клуба и «шведского стола». У нас нет коучинговых программ,
-          бизнес-завтраков и нетворкинга. Если вы ищете отель — нам не по пути, и это честно.
-        </p>
+        {about.storySections.map((s) => (
+          <Fragment key={s.id ?? s.heading}>
+            <h3>{s.heading}</h3>
+            {s.pullQuote && <p className="pull">{s.pullQuote}</p>}
+            <p>{s.body}</p>
+          </Fragment>
+        ))}
       </section>
 
       <section className="values" data-screen-label="03 Принципы">
         <div className="values-inner">
           <div className="values-head">
-            <p className="eyebrow">★ во что мы верим ★</p>
-            <h2>Четыре простых принципа.</h2>
+            {valuesHead.eyebrow && <p className="eyebrow">{valuesHead.eyebrow}</p>}
+            {valuesHead.title && <h2>{valuesHead.title}</h2>}
           </div>
           <div className="values-grid">
-            <Value num={1} title={["Медленно — это", "нормально."]}
-              text="Дети имеют право скучать. Родители — просто сидеть на одеяле и молчать. У нас нет «обязательной программы» — всё добровольно." />
-            <Value num={2} title={["Природа учит", "лучше экрана."]}
-              text="Wi-fi — только в лаундже, 18:00–22:00. В остальное время — живые костры, мокрый мох под ногами и первые светлячки." />
-            <Value num={3} title={["Малое — значит", "уютное."]}
-              text="Мы берём 80 человек за смену, не больше. К четвёртому дню все знают друг друга по имени. К десятому — обнимаются на прощание." />
+            {about.values.map((v) => (
+              <Value
+                key={v.id ?? v.num}
+                num={v.num}
+                titleLine1={v.titleLine1}
+                titleLine2={v.titleLine2 ?? ""}
+                text={v.text}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -77,8 +73,8 @@ export default async function AboutPage() {
       <section className="team-band" data-screen-label="04 Команда">
         <div className="team-inner">
           <div className="team-head">
-            <p className="eyebrow">★ кто мы ★</p>
-            <h2>Команда Belcreation.</h2>
+            {teamHead.eyebrow && <p className="eyebrow">{teamHead.eyebrow}</p>}
+            {teamHead.title && <h2>{teamHead.title}</h2>}
           </div>
           <div className="team-grid">
             {team.map((m, i) => {
@@ -102,45 +98,64 @@ export default async function AboutPage() {
 
       <section className="numbers" data-screen-label="05 Цифры">
         <div className="numbers-inner">
-          <Number val="7" label="лет в лесу" />
-          <Number val="1 802" label="семьи у нас побывали" />
-          <Number val="76 %" label="возвращаются на второе лето" />
-          <Number val="0" label="wi-fi-роутеров в палатках" />
+          {about.numbers.map((n) => (
+            <div key={n.id ?? n.value} className="num-card">
+              <div className="num-val">{n.value}</div>
+              <div className="num-lbl">{n.label}</div>
+            </div>
+          ))}
         </div>
       </section>
 
       <section className="manifesto" data-screen-label="06 Манифест">
         <div className="manifesto-inner">
-          мы не делаем <span>отпуск мечты</span>.<br />
-          мы делаем <span>лето, которое помнится</span>,<br />
-          когда через десять лет ваш ребёнок
-          <br />
-          будет рассказывать <span>«а помнишь, как мы тогда…»</span>.
+          {about.manifesto.map((seg, i) =>
+            seg.emphasized ? (
+              <span key={seg.id ?? i}>{seg.text}</span>
+            ) : (
+              <Fragment key={seg.id ?? i}>{renderWithBreaks(seg.text)}</Fragment>
+            ),
+          )}
         </div>
       </section>
     </>
   );
 }
 
-function Value({ num, title, text }: { num: number; title: [string, string]; text: string }) {
+function renderWithBreaks(text: string) {
+  const lines = text.split("\n");
+  return lines.map((line, i) => (
+    <Fragment key={i}>
+      {line}
+      {i < lines.length - 1 && <br />}
+    </Fragment>
+  ));
+}
+
+function Value({
+  num,
+  titleLine1,
+  titleLine2,
+  text,
+}: {
+  num: number;
+  titleLine1: string;
+  titleLine2: string;
+  text: string;
+}) {
   return (
     <div className="value-card">
       <div className="value-num">{num}</div>
       <h4>
-        {title[0]}
-        <br />
-        {title[1]}
+        {titleLine1}
+        {titleLine2 && (
+          <>
+            <br />
+            {titleLine2}
+          </>
+        )}
       </h4>
       <p>{text}</p>
-    </div>
-  );
-}
-
-function Number({ val, label }: { val: string; label: string }) {
-  return (
-    <div className="num-card">
-      <div className="num-val">{val}</div>
-      <div className="num-lbl">{label}</div>
     </div>
   );
 }

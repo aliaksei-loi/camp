@@ -19,7 +19,8 @@
     "seed:team": "tsx --env-file=.env.local scripts/seed-team-members.ts",
     "seed:lodges": "tsx --env-file=.env.local scripts/seed-lodges.ts",
     "seed:reviews": "tsx --env-file=.env.local scripts/seed-reviews.ts",
-    "seed:home": "tsx --env-file=.env.local scripts/seed-home.ts"
+    "seed:home": "tsx --env-file=.env.local scripts/seed-home.ts",
+    "seed:about": "tsx --env-file=.env.local scripts/seed-about.ts"
   },
   "dependencies": {
     "@payloadcms/db-mongodb": "^3.83.0",
