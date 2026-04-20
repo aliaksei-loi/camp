@@ -17,6 +17,7 @@ vi.mock("next/headers", () => ({
 vi.mock("@payload-config", () => ({ default: {} }));
 
 import {
+  getAboutPage,
   getActivities,
   getFaqs,
   getHome,
@@ -436,5 +437,43 @@ describe("getHome", () => {
   it("tolerates empty global (all fields optional in schema)", async () => {
     findGlobalMock.mockResolvedValue({});
     await expect(getHome()).resolves.toBeTruthy();
+  });
+});
+
+describe("getAboutPage", () => {
+  beforeEach(() => {
+    findGlobalMock.mockReset();
+    draftModeMock.mockReset();
+    draftModeMock.mockResolvedValue({ isEnabled: false });
+  });
+
+  it("returns parsed About global with required field shapes", async () => {
+    findGlobalMock.mockResolvedValue({
+      hero: { eyebrow: "★", titlePart1: "We" },
+      storySections: [{ heading: "h1", body: "b1", pullQuote: "q1" }],
+      values: [{ num: 1, titleLine1: "l1", text: "t1" }],
+      numbers: [{ value: "7", label: "years" }],
+      manifesto: [{ text: "we ", emphasized: false }, { text: "dream", emphasized: true }],
+    });
+    const about = await getAboutPage();
+    expect(about.storySections).toHaveLength(1);
+    expect(about.values[0].num).toBe(1);
+    expect(about.manifesto[1].emphasized).toBe(true);
+  });
+
+  it("rejects malformed values (missing titleLine1)", async () => {
+    findGlobalMock.mockResolvedValue({
+      values: [{ num: 1, text: "t" }],
+    });
+    await expect(getAboutPage()).rejects.toThrow();
+  });
+
+  it("empty global yields empty arrays, not undefined", async () => {
+    findGlobalMock.mockResolvedValue({});
+    const about = await getAboutPage();
+    expect(about.storySections).toEqual([]);
+    expect(about.values).toEqual([]);
+    expect(about.numbers).toEqual([]);
+    expect(about.manifesto).toEqual([]);
   });
 });
