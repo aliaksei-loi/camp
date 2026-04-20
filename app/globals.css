@@ -28,7 +28,7 @@
   --primary-deep: var(--c-blue-deep);
   --accent: var(--c-coral);
 
-  --font-display: var(--font-gloria), "Gloria Hallelujah", "Comic Sans MS", cursive;
+  --font-display: var(--font-gloria), "Caveat", "Comic Sans MS", cursive;
   --font-body: var(--font-nunito), system-ui, sans-serif;
   --font-label: var(--font-nunito), system-ui, sans-serif;
 
@@ -43,7 +43,7 @@
 
 /* Typography themes */
 [data-type="handwritten"] {
-  --font-display: var(--font-gloria), "Gloria Hallelujah", "Comic Sans MS", cursive;
+  --font-display: var(--font-gloria), "Caveat", "Comic Sans MS", cursive;
 }
 [data-type="serif"] {
   --font-display: var(--font-dmserif), "DM Serif Display", Georgia, serif;
@@ -1752,8 +1752,8 @@ section.belt { padding: var(--density-y) 0; }
 /* Safe-area for sticky/fixed bottom elements */
 .tweaks-open-btn { padding-bottom: max(10px, env(safe-area-inset-bottom)); }
 
-/* CLS: give canvas placeholders a default aspect-ratio */
-[data-ph] { aspect-ratio: 4/3; }
+/* CLS: give canvas placeholders a default aspect-ratio (div-only; spans stay inline) */
+div[data-ph] { aspect-ratio: 4/3; }
 
 /* ===== Desktop tier: restore multi-column grids + densities ===== */
 @media (min-width: 768px) {
@@ -1777,7 +1777,7 @@ section.belt { padding: var(--density-y) 0; }
 
   .topbar { padding: 14px 28px; gap: 12px; font-size: 13px; }
   .topbar-brand { font-size: 22px; }
-  .topbar-links { flex-wrap: wrap; overflow: visible; flex: 0 0 auto; }
+  .topbar-links { flex-wrap: wrap; overflow: visible; flex: 0 0 auto; margin-left: auto; }
   .topbar-link { min-height: 0; padding: 6px 12px; }
 
   .marquee-strip { padding: 12px 0; }
@@ -1822,12 +1822,12 @@ section.belt { padding: var(--density-y) 0; }
   .chip, .g-filter, .lodge-link, .tweak-opts button { min-height: 0; }
   .faq-toggle { width: 28px; height: 28px; }
 
-  [data-ph] { aspect-ratio: auto; }
+  div[data-ph] { aspect-ratio: auto; }
 }
 
 /* Unwind decorative card rotation on phones (was causing overflow) */
 @media (max-width: 599.98px) {
-  .review, .team-card, .g-item { transform: none; }
+  .review, .team-card { transform: none; }
   .review:nth-child(1),
   .review:nth-child(2),
   .review:nth-child(3),
