@@ -47,3 +47,4 @@ next-env.d.ts
 
 # harvested assets (not committed — binaries)
 /assets/harvested/
+.env*.local
