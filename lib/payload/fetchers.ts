@@ -416,3 +416,73 @@ export const getAboutPage = async (): Promise<AboutPage> => {
   });
   return AboutPageSchema.parse(doc);
 };
+
+// ---------- Gallery photos ----------
+
+const GalleryPhotoSchema = z.object({
+  id: z.string(),
+  image: z.union([z.string(), MediaRefSchema]).nullish(),
+  title: z.string(),
+  meta: TextLike,
+  category: z.enum(["camp", "kids", "food", "nature", "night", "water"]),
+  shape: z.enum(["wide", "tall", "short", "sq"]),
+  style: z.string().nullish(),
+  isVideo: z.boolean().nullish(),
+  mood: TextLike,
+  order: z.number().nullish(),
+});
+
+export type GalleryPhoto = z.infer<typeof GalleryPhotoSchema>;
+
+const GalleryPhotosSchema = z.array(GalleryPhotoSchema);
+
+export const getGalleryPhotos = async (): Promise<GalleryPhoto[]> => {
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "gallery-photos",
+    sort: "order",
+    limit: 200,
+    depth: 1,
+  });
+  return GalleryPhotosSchema.parse(docs);
+};
+
+// ---------- Gallery page global ----------
+
+const GalleryPageSchema = z.object({
+  hero: z
+    .object({ eyebrow: TextLike, titleLine1: TextLike, titleLine2: TextLike, sub: TextLike })
+    .nullish(),
+  telegramStrip: z
+    .object({
+      eyebrow: TextLike,
+      handle: TextLike,
+      body: TextLike,
+      ctaLabel: TextLike,
+      ctaHref: TextLike,
+    })
+    .nullish(),
+  instaTiles: z
+    .array(
+      z.object({
+        id: z.string().nullish(),
+        image: z.union([z.string(), MediaRefSchema]).nullish(),
+        mood: TextLike,
+      }),
+    )
+    .default([]),
+});
+
+export type GalleryPage = z.infer<typeof GalleryPageSchema>;
+
+export const getGalleryPage = async (): Promise<GalleryPage> => {
+  const { isEnabled: draft } = await draftMode();
+  const payload = await getPayload({ config });
+  const doc = await payload.findGlobal({
+    slug: "gallery-page",
+    draft,
+    depth: 1,
+    overrideAccess: draft,
+  });
+  return GalleryPageSchema.parse(doc);
+};

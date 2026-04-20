@@ -9,12 +9,14 @@ import { fileURLToPath } from "url";
 
 import { Activities } from "./collections/Activities";
 import { Faqs } from "./collections/Faqs";
+import { GalleryPhotos } from "./collections/GalleryPhotos";
 import { Lodges } from "./collections/Lodges";
 import { Plans } from "./collections/Plans";
 import { Reviews } from "./collections/Reviews";
 import { Shifts } from "./collections/Shifts";
 import { TeamMembers } from "./collections/TeamMembers";
 import { AboutPage } from "./globals/AboutPage";
+import { GalleryPage } from "./globals/GalleryPage";
 import { Home } from "./globals/Home";
 
 const filename = fileURLToPath(import.meta.url);
@@ -50,8 +52,9 @@ export default buildConfig({
     TeamMembers,
     Lodges,
     Reviews,
+    GalleryPhotos,
   ],
-  globals: [Home, AboutPage],
+  globals: [Home, AboutPage, GalleryPage],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

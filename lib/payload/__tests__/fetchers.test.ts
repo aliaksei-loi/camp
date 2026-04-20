@@ -20,6 +20,8 @@ import {
   getAboutPage,
   getActivities,
   getFaqs,
+  getGalleryPage,
+  getGalleryPhotos,
   getHome,
   getLodges,
   getPlans,
@@ -475,5 +477,63 @@ describe("getAboutPage", () => {
     expect(about.values).toEqual([]);
     expect(about.numbers).toEqual([]);
     expect(about.manifesto).toEqual([]);
+  });
+});
+
+describe("getGalleryPhotos", () => {
+  beforeEach(() => {
+    findMock.mockReset();
+  });
+
+  it("returns parsed photos with enum categories + shapes", async () => {
+    findMock.mockResolvedValue({
+      docs: [
+        { id: "p1", title: "x", category: "camp", shape: "tall", order: 1 },
+        { id: "p2", title: "y", category: "night", shape: "wide", isVideo: true, order: 2 },
+      ],
+    });
+    const photos = await getGalleryPhotos();
+    expect(photos).toHaveLength(2);
+    expect(photos[1].isVideo).toBe(true);
+  });
+
+  it("rejects docs with invalid category enum", async () => {
+    findMock.mockResolvedValue({
+      docs: [{ id: "p1", title: "x", category: "spaceships", shape: "tall" }],
+    });
+    await expect(getGalleryPhotos()).rejects.toThrow();
+  });
+
+  it("requests depth=1 for image population", async () => {
+    findMock.mockResolvedValue({ docs: [] });
+    await getGalleryPhotos();
+    expect(findMock).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: "gallery-photos", depth: 1 }),
+    );
+  });
+});
+
+describe("getGalleryPage", () => {
+  beforeEach(() => {
+    findGlobalMock.mockReset();
+    draftModeMock.mockReset();
+    draftModeMock.mockResolvedValue({ isEnabled: false });
+  });
+
+  it("returns gallery-page with parsed insta tiles", async () => {
+    findGlobalMock.mockResolvedValue({
+      hero: { eyebrow: "★ архив ★" },
+      telegramStrip: { handle: "@bc" },
+      instaTiles: [{ image: { id: "m1", url: "https://x/y.jpg" } }, { mood: "lake" }],
+    });
+    const page = await getGalleryPage();
+    expect(page.instaTiles).toHaveLength(2);
+    expect(page.telegramStrip?.handle).toBe("@bc");
+  });
+
+  it("tolerates empty global", async () => {
+    findGlobalMock.mockResolvedValue({});
+    const page = await getGalleryPage();
+    expect(page.instaTiles).toEqual([]);
   });
 });
