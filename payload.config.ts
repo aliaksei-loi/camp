@@ -11,6 +11,7 @@ import { Activities } from "./collections/Activities";
 import { Faqs } from "./collections/Faqs";
 import { Lodges } from "./collections/Lodges";
 import { Plans } from "./collections/Plans";
+import { Reviews } from "./collections/Reviews";
 import { Shifts } from "./collections/Shifts";
 import { TeamMembers } from "./collections/TeamMembers";
 
@@ -46,6 +47,7 @@ export default buildConfig({
     Plans,
     TeamMembers,
     Lodges,
+    Reviews,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
