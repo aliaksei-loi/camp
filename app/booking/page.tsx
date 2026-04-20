@@ -108,8 +108,8 @@ export default function BookingPage() {
                     <div className="tm-val">{total} чел</div>
                   </div>
                 </div>
-                <div>
-                  <Link href="/" className="btn ghost" style={{ marginRight: 10 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 10 }}>
+                  <Link href="/" className="btn ghost">
                     На главную
                   </Link>
                   <Link href="/gallery" className="btn">
@@ -140,6 +140,8 @@ export default function BookingPage() {
                     <label>Имя</label>
                     <input
                       type="text"
+                      autoComplete="given-name"
+                      enterKeyHint="next"
                       placeholder="Алёна"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -149,6 +151,8 @@ export default function BookingPage() {
                     <label>Фамилия</label>
                     <input
                       type="text"
+                      autoComplete="family-name"
+                      enterKeyHint="next"
                       placeholder="Маркевич"
                       value={form.surname}
                       onChange={(e) => setForm({ ...form, surname: e.target.value })}
@@ -160,6 +164,9 @@ export default function BookingPage() {
                     <label>Email</label>
                     <input
                       type="email"
+                      inputMode="email"
+                      autoComplete="email"
+                      enterKeyHint="next"
                       placeholder="you@mail.by"
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -169,6 +176,9 @@ export default function BookingPage() {
                     <label>Телефон / Telegram</label>
                     <input
                       type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      enterKeyHint="done"
                       placeholder="+375 29 123 45 67"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}

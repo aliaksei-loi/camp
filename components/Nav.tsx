@@ -5,25 +5,31 @@ import { usePathname } from "next/navigation";
 
 type NavLink = { href: string; label: string; id: string; match: (path: string) => boolean };
 
-const links: NavLink[] = [
+const scrollLinks: NavLink[] = [
   { href: "/", label: "Главная", id: "home", match: (p) => p === "/" },
   { href: "/about", label: "О нас", id: "about", match: (p) => p.startsWith("/about") },
   { href: "/#accom", label: "Размещение", id: "stay", match: () => false },
   { href: "/#schedule", label: "Смены", id: "shifts", match: () => false },
   { href: "/gallery", label: "Галерея", id: "gallery", match: (p) => p.startsWith("/gallery") },
-  { href: "/booking", label: "Регистрация", id: "book", match: (p) => p.startsWith("/booking") },
 ];
+
+const pinnedLink: NavLink = {
+  href: "/booking",
+  label: "Регистрация",
+  id: "book",
+  match: (p) => p.startsWith("/booking"),
+};
 
 export function Nav() {
   const pathname = usePathname();
   return (
     <>
-      <div className="topbar">
+      <nav className="topbar" aria-label="Основная навигация">
         <Link href="/" className="topbar-brand">
           belcreation
         </Link>
         <div className="topbar-links">
-          {links.map((l) => (
+          {scrollLinks.map((l) => (
             <Link
               key={l.id}
               className={`topbar-link ${l.match(pathname) ? "active" : ""}`}
@@ -33,7 +39,13 @@ export function Nav() {
             </Link>
           ))}
         </div>
-      </div>
+        <Link
+          className={`topbar-link topbar-link-pinned ${pinnedLink.match(pathname) ? "active" : ""}`}
+          href={pinnedLink.href}
+        >
+          ({pinnedLink.label})
+        </Link>
+      </nav>
       <div className="marquee-strip">
         <div className="marquee-track">
           <span>

@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Gloria_Hallelujah, Nunito, DM_Serif_Display, Bricolage_Grotesque } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Caveat, Nunito, DM_Serif_Display, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
@@ -7,10 +7,10 @@ import { IconSprite } from "@/components/IconSprite";
 import { Tweaks } from "@/components/Tweaks";
 import { PlaceholderFiller } from "@/components/PlaceholderFiller";
 
-const gloria = Gloria_Hallelujah({
+const gloria = Caveat({
   variable: "--font-gloria",
-  subsets: ["latin"],
-  weight: "400",
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -41,6 +41,13 @@ export const metadata: Metadata = {
     "Belcreation — семейный кемпинг на берегу озера Нарочь. Палатки, домики, костры, программы для детей и взрослых. Лето 2026.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#B94A2A",
+  viewportFit: "cover",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
@@ -55,7 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <IconSprite />
         {children}
         <Footer />
-        <Tweaks />
+        {process.env.NODE_ENV !== "production" && <Tweaks />}
         <PlaceholderFiller />
       </body>
     </html>
