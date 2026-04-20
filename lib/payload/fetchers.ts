@@ -117,3 +117,39 @@ export const getPlans = async (): Promise<Plan[]> => {
   });
   return PlansSchema.parse(docs);
 };
+
+// ---------- Team members ----------
+
+const MediaRefSchema = z
+  .object({
+    id: z.string(),
+    url: z.string().nullish(),
+    alt: z.string().nullish(),
+    width: z.number().nullish(),
+    height: z.number().nullish(),
+  })
+  .nullish();
+
+const TeamMemberSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  role: z.string(),
+  bio: z.string(),
+  photo: z.union([z.string(), MediaRefSchema]).nullish(),
+  order: z.number().nullish(),
+});
+
+export type TeamMember = z.infer<typeof TeamMemberSchema>;
+
+const TeamMembersSchema = z.array(TeamMemberSchema);
+
+export const getTeamMembers = async (): Promise<TeamMember[]> => {
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "team-members",
+    sort: "order",
+    limit: 100,
+    depth: 1,
+  });
+  return TeamMembersSchema.parse(docs);
+};
