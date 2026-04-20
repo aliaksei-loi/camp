@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import { getFaqs } from "@/lib/payload/fetchers";
+import { getActivities, getFaqs } from "@/lib/payload/fetchers";
 
 export default async function HomePage() {
-  const faqs = await getFaqs();
+  const [faqs, activities] = await Promise.all([getFaqs(), getActivities()]);
 
   return (
     <>
@@ -229,14 +229,9 @@ export default async function HomePage() {
             </h2>
           </div>
           <div className="act-grid">
-            <Activity icon="ic-canoe" name="Каноэ и сапы" desc="на рассвете, когда озеро гладкое как стекло" />
-            <Activity icon="ic-leaf" name="Травы и чаи" desc="собираем, сушим, завариваем вместе с ботаником" />
-            <Activity icon="ic-marshmallow" name="Костровые вечера" desc="маршмеллоу, гитара, истории из детства" />
-            <Activity icon="ic-bowl" name="Кулинарная юрта" desc="пироги на огне, хлеб в печке, варенье из малины" />
-            <Activity icon="ic-map" name="Квесты для детей" desc="карта, подсказки, клад — каждый день новый" />
-            <Activity icon="ic-star" name="Астро-вечера" desc="телескоп, одеяла и рассказы про созвездия" />
-            <Activity icon="ic-guitar" name="Концерты и квартирники" desc="раз в смену — живая музыка под навесом" />
-            <Activity icon="ic-tree" name="Лесная йога" desc="утренняя практика босиком по мягкому мху" />
+            {activities.map((a) => (
+              <Activity key={a.id} icon={a.icon} name={a.name} desc={a.description} />
+            ))}
           </div>
         </div>
       </section>

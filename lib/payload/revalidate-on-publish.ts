@@ -7,7 +7,10 @@ export const revalidateOnPublish = (
   path: string,
 ): CollectionAfterChangeHook & GlobalAfterChangeHook =>
   (async ({ doc }: { doc: unknown }) => {
-    if ((doc as StatusHolder)?._status === "published") {
+    const status = (doc as StatusHolder)?._status;
+    // Fire on: "published" (drafts-on collections) AND undefined (drafts-off collections
+    // where every save is effectively published). Skip only explicit drafts.
+    if (status !== "draft") {
       try {
         revalidatePath(path);
       } catch {

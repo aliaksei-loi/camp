@@ -7,6 +7,7 @@ import { buildConfig } from "payload";
 import sharp from "sharp";
 import { fileURLToPath } from "url";
 
+import { Activities } from "./collections/Activities";
 import { Faqs } from "./collections/Faqs";
 
 const filename = fileURLToPath(import.meta.url);
@@ -35,6 +36,7 @@ export default buildConfig({
       ],
     },
     Faqs,
+    Activities,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",

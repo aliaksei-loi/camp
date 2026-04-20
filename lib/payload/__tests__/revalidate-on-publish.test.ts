@@ -22,7 +22,7 @@ describe("revalidateOnPublish", () => {
     revalidatePathMock.mockReset();
   });
 
-  it("revalidates when doc status is published", async () => {
+  it("revalidates when doc status is published (drafts-on collection)", async () => {
     await run({ _status: "published", id: "1" });
     expect(revalidatePathMock).toHaveBeenCalledTimes(1);
     expect(revalidatePathMock).toHaveBeenCalledWith("/");
@@ -33,9 +33,9 @@ describe("revalidateOnPublish", () => {
     expect(revalidatePathMock).not.toHaveBeenCalled();
   });
 
-  it("does not revalidate when doc has no status", async () => {
+  it("revalidates when doc has no status (drafts-off collection)", async () => {
     await run({ id: "1" });
-    expect(revalidatePathMock).not.toHaveBeenCalled();
+    expect(revalidatePathMock).toHaveBeenCalledTimes(1);
   });
 
   it("revalidates the configured path (not hard-coded)", async () => {

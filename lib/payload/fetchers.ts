@@ -4,6 +4,8 @@ import { z } from "zod";
 
 import config from "@payload-config";
 
+// ---------- FAQs ----------
+
 const FaqSchema = z.object({
   id: z.string(),
   question: z.string(),
@@ -27,4 +29,28 @@ export const getFaqs = async (): Promise<Faq[]> => {
     overrideAccess: draft,
   });
   return FaqsSchema.parse(docs);
+};
+
+// ---------- Activities ----------
+
+const ActivitySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  icon: z.string(),
+  order: z.number().nullish(),
+});
+
+export type Activity = z.infer<typeof ActivitySchema>;
+
+const ActivitiesSchema = z.array(ActivitySchema);
+
+export const getActivities = async (): Promise<Activity[]> => {
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "activities",
+    sort: "order",
+    limit: 100,
+  });
+  return ActivitiesSchema.parse(docs);
 };
