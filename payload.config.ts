@@ -11,6 +11,7 @@ import { Activities } from "./collections/Activities";
 import { Faqs } from "./collections/Faqs";
 import { Plans } from "./collections/Plans";
 import { Shifts } from "./collections/Shifts";
+import { TeamMembers } from "./collections/TeamMembers";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -33,6 +34,7 @@ export default buildConfig({
       slug: "media",
       upload: true,
       admin: { useAsTitle: "filename" },
+      access: { read: () => true },
       fields: [
         { name: "alt", type: "text" },
       ],
@@ -41,6 +43,7 @@ export default buildConfig({
     Activities,
     Shifts,
     Plans,
+    TeamMembers,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",

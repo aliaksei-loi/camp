@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 
+import { CmsImage } from "@/components/CmsImage";
+import { getTeamMembers } from "@/lib/payload/fetchers";
+
 export const metadata: Metadata = {
   title: "Belcreation — о нас",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const team = await getTeamMembers();
+
   return (
     <>
       <section className="about-hero" data-screen-label="01 О нас — заголовок">
@@ -76,34 +81,21 @@ export default function AboutPage() {
             <h2>Команда Belcreation.</h2>
           </div>
           <div className="team-grid">
-            <TeamMember
-              mood="kids"
-              seed={81}
-              name="Катя Бельская"
-              role="основатель · повар"
-              bio="Тот самый человек, который варит суп на 80 человек и помнит, кто не ест кинзу."
-            />
-            <TeamMember
-              mood="forest"
-              seed={82}
-              name="Артём Бельский"
-              role="основатель · инструктор"
-              bio="Канойные туры, походы, дрова, гитара. Говорит, что водил каноэ раньше, чем ходил."
-            />
-            <TeamMember
-              mood="meadow"
-              seed={83}
-              name="Таня Вороненко"
-              role="детская программа"
-              bio="Педагог-дошкольник, 12 лет опыта. Знает 40 игр на воздухе и ни одной — на экране."
-            />
-            <TeamMember
-              mood="lake"
-              seed={84}
-              name="Игорь Малевич"
-              role="ботаник"
-              bio="Ведёт сбор трав и лесные прогулки. Может узнать любое дерево с закрытыми глазами — по запаху."
-            />
+            {team.map((m, i) => {
+              const photo = typeof m.photo === "object" ? m.photo : null;
+              return (
+                <div key={m.id} className="team-card">
+                  <div className="team-img" data-ph="kids" data-seed={81 + i}>
+                    <CmsImage media={photo} fill sizes="280px" />
+                  </div>
+                  <div className="team-body">
+                    <h4 className="team-name">{m.name}</h4>
+                    <div className="team-role">{m.role}</div>
+                    <p className="team-bio">{m.bio}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -140,21 +132,6 @@ function Value({ num, title, text }: { num: number; title: [string, string]; tex
         {title[1]}
       </h4>
       <p>{text}</p>
-    </div>
-  );
-}
-
-type TeamMemberProps = { mood: string; seed: number; name: string; role: string; bio: string };
-
-function TeamMember({ mood, seed, name, role, bio }: TeamMemberProps) {
-  return (
-    <div className="team-card">
-      <div className="team-img" data-ph={mood} data-seed={seed} />
-      <div className="team-body">
-        <h4 className="team-name">{name}</h4>
-        <div className="team-role">{role}</div>
-        <p className="team-bio">{bio}</p>
-      </div>
     </div>
   );
 }

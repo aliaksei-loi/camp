@@ -15,7 +15,13 @@ vi.mock("next/headers", () => ({
 
 vi.mock("@payload-config", () => ({ default: {} }));
 
-import { getActivities, getFaqs, getPlans, getShifts } from "../fetchers";
+import {
+  getActivities,
+  getFaqs,
+  getPlans,
+  getShifts,
+  getTeamMembers,
+} from "../fetchers";
 
 describe("getFaqs", () => {
   beforeEach(() => {
@@ -251,5 +257,54 @@ describe("getPlans", () => {
       docs: [{ id: "p1", eyebrow: "base", name: "X", items: [] }],
     });
     await expect(getPlans()).rejects.toThrow();
+  });
+});
+
+describe("getTeamMembers", () => {
+  beforeEach(() => {
+    findMock.mockReset();
+    draftModeMock.mockReset();
+  });
+
+  it("returns parsed members incl. populated photo media doc", async () => {
+    findMock.mockResolvedValue({
+      docs: [
+        {
+          id: "m1",
+          name: "Катя",
+          role: "founder",
+          bio: "bio text",
+          photo: {
+            id: "media-1",
+            url: "https://x.public.blob.vercel-storage.com/a.jpg",
+            alt: "Katya",
+            width: 800,
+            height: 1000,
+          },
+          order: 1,
+        },
+        { id: "m2", name: "Артём", role: "founder", bio: "bio2" },
+      ],
+    });
+
+    const members = await getTeamMembers();
+    expect(members).toHaveLength(2);
+    expect(members[0].photo).toMatchObject({ url: expect.stringMatching(/\.jpg$/) });
+    expect(members[1].photo).toBeUndefined();
+  });
+
+  it("passes depth=1 so photo is populated", async () => {
+    findMock.mockResolvedValue({ docs: [] });
+    await getTeamMembers();
+    expect(findMock).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: "team-members", depth: 1 }),
+    );
+  });
+
+  it("accepts team member without photo (field is optional)", async () => {
+    findMock.mockResolvedValue({
+      docs: [{ id: "m1", name: "X", role: "y", bio: "z" }],
+    });
+    await expect(getTeamMembers()).resolves.toHaveLength(1);
   });
 });
