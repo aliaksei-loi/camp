@@ -9,6 +9,7 @@ import { fileURLToPath } from "url";
 
 import { Activities } from "./collections/Activities";
 import { Faqs } from "./collections/Faqs";
+import { Shifts } from "./collections/Shifts";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -37,6 +38,7 @@ export default buildConfig({
     },
     Faqs,
     Activities,
+    Shifts,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",

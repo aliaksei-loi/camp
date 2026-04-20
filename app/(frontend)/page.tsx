@@ -1,9 +1,13 @@
 import Link from "next/link";
 
-import { getActivities, getFaqs } from "@/lib/payload/fetchers";
+import { getActivities, getFaqs, getShifts } from "@/lib/payload/fetchers";
 
 export default async function HomePage() {
-  const [faqs, activities] = await Promise.all([getFaqs(), getActivities()]);
+  const [faqs, activities, shifts] = await Promise.all([
+    getFaqs(),
+    getActivities(),
+    getShifts(),
+  ]);
 
   return (
     <>
@@ -253,12 +257,17 @@ export default async function HomePage() {
             </Link>
           </div>
           <div className="shifts">
-            <Shift num={1} dates={["07 — 16", "июня"]} theme="Open smena — знакомство" left={6} />
-            <Shift num={2} dates={["18 — 27", "июня"]} theme="Творческая — ремёсла" left={14} />
-            <Shift num={3} dates={["29 июня —", "08 июля"]} theme="Водная — сапы, каноэ" left={3} />
-            <Shift num={4} dates={["10 — 19", "июля"]} theme="Большая семейная" soldOut />
-            <Shift num={5} dates={["21 — 30", "июля"]} theme="Музыкальная — квартирники" left={18} />
-            <Shift num={6} dates={["01 — 10", "августа"]} theme="Дикая — походы и астро" left={22} />
+            {shifts.map((s) => (
+              <Shift
+                key={s.id}
+                num={s.num}
+                dates={[s.datesLine1, s.datesLine2]}
+                theme={s.theme}
+                spotsTotal={s.spotsTotal ?? 42}
+                left={s.spotsLeft ?? 0}
+                soldOut={s.soldOut ?? false}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -444,9 +453,16 @@ function Activity({ icon, name, desc }: { icon: string; name: string; desc: stri
   );
 }
 
-type ShiftProps = { num: number; dates: [string, string]; theme: string; left?: number; soldOut?: boolean };
+type ShiftProps = {
+  num: number;
+  dates: [string, string];
+  theme: string;
+  spotsTotal: number;
+  left: number;
+  soldOut: boolean;
+};
 
-function Shift({ num, dates, theme, left, soldOut }: ShiftProps) {
+function Shift({ num, dates, theme, spotsTotal, left, soldOut }: ShiftProps) {
   return (
     <div className="shift">
       <div className="shift-num">{num}</div>
@@ -457,7 +473,7 @@ function Shift({ num, dates, theme, left, soldOut }: ShiftProps) {
       </div>
       <div className="shift-theme">{theme}</div>
       <div className="shift-spots">
-        <span>42 места</span>
+        <span>{spotsTotal} мест</span>
         {soldOut ? <span className="spots-sold">sold out</span> : <span className="spots-left">свободно {left}</span>}
       </div>
     </div>

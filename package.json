@@ -13,7 +13,8 @@
     "generate:types": "pnpm payload generate:types",
     "generate:importmap": "pnpm payload generate:importmap",
     "seed:faqs": "tsx --env-file=.env.local scripts/seed-faqs.ts",
-    "seed:activities": "tsx --env-file=.env.local scripts/seed-activities.ts"
+    "seed:activities": "tsx --env-file=.env.local scripts/seed-activities.ts",
+    "seed:shifts": "tsx --env-file=.env.local scripts/seed-shifts.ts"
   },
   "dependencies": {
     "@payloadcms/db-mongodb": "^3.83.0",

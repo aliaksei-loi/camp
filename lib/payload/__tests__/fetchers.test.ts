@@ -15,7 +15,7 @@ vi.mock("next/headers", () => ({
 
 vi.mock("@payload-config", () => ({ default: {} }));
 
-import { getActivities, getFaqs } from "../fetchers";
+import { getActivities, getFaqs, getShifts } from "../fetchers";
 
 describe("getFaqs", () => {
   beforeEach(() => {
@@ -136,5 +136,68 @@ describe("getActivities", () => {
       docs: [{ id: "a1", name: "Йога", description: "…" }],
     });
     await expect(getActivities()).rejects.toThrow();
+  });
+});
+
+describe("getShifts", () => {
+  beforeEach(() => {
+    findMock.mockReset();
+    draftModeMock.mockReset();
+    draftModeMock.mockResolvedValue({ isEnabled: false });
+  });
+
+  it("returns parsed shifts list", async () => {
+    findMock.mockResolvedValue({
+      docs: [
+        {
+          id: "s1",
+          num: 1,
+          datesLine1: "07 — 16",
+          datesLine2: "июня",
+          theme: "Open smena",
+          spotsTotal: 42,
+          spotsLeft: 6,
+          soldOut: false,
+          order: 1,
+        },
+        {
+          id: "s4",
+          num: 4,
+          datesLine1: "10 — 19",
+          datesLine2: "июля",
+          theme: "Семейная",
+          soldOut: true,
+        },
+      ],
+    });
+
+    const shifts = await getShifts();
+    expect(shifts).toHaveLength(2);
+    expect(shifts[0].num).toBe(1);
+    expect(shifts[1].soldOut).toBe(true);
+  });
+
+  it("requests drafts + overrides access in draft mode", async () => {
+    draftModeMock.mockResolvedValue({ isEnabled: true });
+    findMock.mockResolvedValue({ docs: [] });
+    await getShifts();
+    expect(findMock).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: "shifts", draft: true, overrideAccess: true }),
+    );
+  });
+
+  it("published-only when draft mode is off", async () => {
+    findMock.mockResolvedValue({ docs: [] });
+    await getShifts();
+    expect(findMock).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: "shifts", draft: false, overrideAccess: false }),
+    );
+  });
+
+  it("rejects malformed docs (Zod — missing theme)", async () => {
+    findMock.mockResolvedValue({
+      docs: [{ id: "s1", num: 1, datesLine1: "a", datesLine2: "b" }],
+    });
+    await expect(getShifts()).rejects.toThrow();
   });
 });
