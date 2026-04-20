@@ -153,3 +153,36 @@ export const getTeamMembers = async (): Promise<TeamMember[]> => {
   });
   return TeamMembersSchema.parse(docs);
 };
+
+// ---------- Lodges ----------
+
+const LodgeSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  meta: z.string(),
+  price: z.string(),
+  image: z.union([z.string(), MediaRefSchema]).nullish(),
+  tag: z.string().nullish(),
+  tagBg: z.string().nullish(),
+  tagColor: z.string().nullish(),
+  mood: z.string().nullish(),
+  order: z.number().nullish(),
+});
+
+export type Lodge = z.infer<typeof LodgeSchema>;
+
+const LodgesSchema = z.array(LodgeSchema);
+
+export const getLodges = async (): Promise<Lodge[]> => {
+  const { isEnabled: draft } = await draftMode();
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "lodges",
+    draft,
+    sort: "order",
+    limit: 100,
+    depth: 1,
+    overrideAccess: draft,
+  });
+  return LodgesSchema.parse(docs);
+};

@@ -18,6 +18,7 @@ vi.mock("@payload-config", () => ({ default: {} }));
 import {
   getActivities,
   getFaqs,
+  getLodges,
   getPlans,
   getShifts,
   getTeamMembers,
@@ -306,5 +307,62 @@ describe("getTeamMembers", () => {
       docs: [{ id: "m1", name: "X", role: "y", bio: "z" }],
     });
     await expect(getTeamMembers()).resolves.toHaveLength(1);
+  });
+});
+
+describe("getLodges", () => {
+  beforeEach(() => {
+    findMock.mockReset();
+    draftModeMock.mockReset();
+    draftModeMock.mockResolvedValue({ isEnabled: false });
+  });
+
+  it("returns parsed lodges incl. populated image", async () => {
+    findMock.mockResolvedValue({
+      docs: [
+        {
+          id: "l1",
+          name: "Сосна",
+          meta: "до 4",
+          price: "от 140",
+          image: {
+            id: "media-1",
+            url: "https://x.public.blob.vercel-storage.com/tent.jpg",
+            width: 1200,
+            height: 800,
+          },
+          tag: "★ Популярно",
+          order: 1,
+        },
+        {
+          id: "l2",
+          name: "Своя",
+          meta: "место",
+          price: "от 60",
+          order: 6,
+        },
+      ],
+    });
+
+    const lodges = await getLodges();
+    expect(lodges).toHaveLength(2);
+    expect(lodges[0].tag).toBe("★ Популярно");
+    expect(lodges[1].image).toBeUndefined();
+  });
+
+  it("requests drafts + overrides access in draft mode", async () => {
+    draftModeMock.mockResolvedValue({ isEnabled: true });
+    findMock.mockResolvedValue({ docs: [] });
+    await getLodges();
+    expect(findMock).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: "lodges", draft: true, overrideAccess: true, depth: 1 }),
+    );
+  });
+
+  it("rejects malformed docs (Zod — missing price)", async () => {
+    findMock.mockResolvedValue({
+      docs: [{ id: "l1", name: "X", meta: "y" }],
+    });
+    await expect(getLodges()).rejects.toThrow();
   });
 });
