@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Caveat, Nunito, DM_Serif_Display, Bricolage_Grotesque } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { IconSprite } from "@/components/IconSprite";
