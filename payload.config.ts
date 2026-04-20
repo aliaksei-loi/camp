@@ -14,6 +14,7 @@ import { Plans } from "./collections/Plans";
 import { Reviews } from "./collections/Reviews";
 import { Shifts } from "./collections/Shifts";
 import { TeamMembers } from "./collections/TeamMembers";
+import { Home } from "./globals/Home";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -49,6 +50,7 @@ export default buildConfig({
     Lodges,
     Reviews,
   ],
+  globals: [Home],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

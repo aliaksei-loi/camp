@@ -4,6 +4,7 @@ import { CmsImage } from "@/components/CmsImage";
 import {
   getActivities,
   getFaqs,
+  getHome,
   getLodges,
   getPlans,
   getReviews,
@@ -11,7 +12,8 @@ import {
 } from "@/lib/payload/fetchers";
 
 export default async function HomePage() {
-  const [faqs, activities, shifts, plans, lodges, reviews] = await Promise.all([
+  const [home, faqs, activities, shifts, plans, lodges, reviews] = await Promise.all([
+    getHome(),
     getFaqs(),
     getActivities(),
     getShifts(),
@@ -20,83 +22,135 @@ export default async function HomePage() {
     getReviews(),
   ]);
 
+  const hero = home.hero ?? {};
+  const intro = home.intro ?? {};
+  const quizBox = home.quizBox ?? {};
+  const pillarsBand = home.pillarsBand ?? { pillars: [] };
+  const accomHead = home.accomHead ?? {};
+  const activitiesHead = home.activitiesHead ?? {};
+  const scheduleHead = home.scheduleHead ?? {};
+  const galleryStrip = home.galleryStrip ?? { tiles: [] };
+  const pricingHead = home.pricingHead ?? {};
+  const reviewsHead = home.reviewsHead ?? {};
+  const faqHead = home.faqHead ?? {};
+
+  const heroImage = typeof hero.image === "object" ? hero.image : null;
+
   return (
     <>
       {/* HERO */}
       <section className="hero hero-v1" data-screen-label="01 Hero">
         <div className="hero-card">
           <div className="hero-photo stripes">
-            <div
-              data-ph="tent"
-              data-seed="3"
-              style={{
-                position: "absolute",
-                inset: 0,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                mixBlendMode: "multiply",
-                opacity: 0.82,
-              }}
+            <CmsImage
+              media={heroImage}
+              fill
+              sizes="800px"
+              style={{ mixBlendMode: "multiply", opacity: 0.82 }}
+              fallback={
+                <div
+                  data-ph="tent"
+                  data-seed="3"
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    mixBlendMode: "multiply",
+                    opacity: 0.82,
+                  }}
+                />
+              }
             />
           </div>
           <div className="hero-right">
-            <span className="hero-tag">✦ семейный кемпинг у озера ✦</span>
+            {hero.tag && <span className="hero-tag">{hero.tag}</span>}
             <h1 className="hero-title">
-              лето,
-              <br />
-              костёр &amp;<br />
-              босиком.
+              {hero.titleLine1}
+              {hero.titleLine2 && (
+                <>
+                  <br />
+                  {hero.titleLine2}
+                </>
+              )}
+              {hero.titleLine3 && (
+                <>
+                  <br />
+                  {hero.titleLine3}
+                </>
+              )}
             </h1>
-            <p className="hero-desc">
-              Belcreation — это три недели в лесу для всей семьи. Палатки на берегу Нарочи, завтрак на траве, сотни
-              звёзд, программы для детей и ни одного будильника. Ничего лишнего — только лето.
-            </p>
+            {hero.description && <p className="hero-desc">{hero.description}</p>}
             <div className="hero-ctas">
-              <Link href="/booking" className="btn">
-                Зарегистрироваться на смену
-              </Link>
-              <Link href="#accom" className="btn ghost">
-                Посмотреть домики →
-              </Link>
+              {hero.ctaPrimaryLabel && hero.ctaPrimaryHref && (
+                <Link href={hero.ctaPrimaryHref} className="btn">
+                  {hero.ctaPrimaryLabel}
+                </Link>
+              )}
+              {hero.ctaSecondaryLabel && hero.ctaSecondaryHref && (
+                <Link href={hero.ctaSecondaryHref} className="btn ghost">
+                  {hero.ctaSecondaryLabel}
+                </Link>
+              )}
             </div>
           </div>
-          <div className="hero-sticker">
-            <div className="sticker">
-              Места
-              <br />
-              на лето
-              <br />— 40%
+          {(hero.stickerLine1 || hero.stickerLine2 || hero.stickerLine3) && (
+            <div className="hero-sticker">
+              <div className="sticker">
+                {hero.stickerLine1}
+                {hero.stickerLine2 && (
+                  <>
+                    <br />
+                    {hero.stickerLine2}
+                  </>
+                )}
+                {hero.stickerLine3 && (
+                  <>
+                    <br />
+                    {hero.stickerLine3}
+                  </>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
       {/* INTRO */}
       <section className="intro belt" data-screen-label="02 Intro">
         <div className="container">
-          <p className="eyebrow">новая парадигма отдыха</p>
+          {intro.eyebrow && <p className="eyebrow">{intro.eyebrow}</p>}
           <h2 className="intro-head">
-            Мы собираем семьи{" "}
-            <svg width="44" height="44" style={{ verticalAlign: "-10px" }}>
-              <use href="#ic-tent" />
-            </svg>{" "}
-            у костра, на берегу озера{" "}
-            <svg width="44" height="44" style={{ verticalAlign: "-10px" }}>
-              <use href="#ic-canoe" />
-            </svg>{" "}
-            и отпускаем их обратно в город немного счастливее.
+            {intro.headPart1}
+            {intro.headIcon1 && (
+              <>
+                {" "}
+                <svg width="44" height="44" style={{ verticalAlign: "-10px" }}>
+                  <use href={`#${intro.headIcon1}`} />
+                </svg>
+              </>
+            )}{" "}
+            {intro.headPart2}
+            {intro.headIcon2 && (
+              <>
+                {" "}
+                <svg width="44" height="44" style={{ verticalAlign: "-10px" }}>
+                  <use href={`#${intro.headIcon2}`} />
+                </svg>
+              </>
+            )}{" "}
+            {intro.headPart3}
           </h2>
-          <p className="intro-sub">
-            6 смен по 10 дней · палатки, домики и глэмпинг · занятия для детей от 3 до 16 · свободное расписание для
-            родителей · никакого wi-fi в лесу, только в лаундже.
-          </p>
+          {intro.sub && <p className="intro-sub">{intro.sub}</p>}
 
           <div className="quiz-box">
-            <span className="quiz-pill">прежде чем листать дальше</span>
-            <h3 className="quiz-title">Не уверены, что кемпинг подойдёт вашей семье?</h3>
-            <Link href="#faq" className="btn">
-              Пройти короткий тест
-            </Link>
+            {quizBox.pill && <span className="quiz-pill">{quizBox.pill}</span>}
+            {quizBox.title && <h3 className="quiz-title">{quizBox.title}</h3>}
+            {quizBox.ctaLabel && quizBox.ctaHref && (
+              <Link href={quizBox.ctaHref} className="btn">
+                {quizBox.ctaLabel}
+              </Link>
+            )}
             <svg className="arrow-left" viewBox="0 0 120 80" fill="none">
               <path
                 d="M4 12 C 30 8 60 28 84 50 C 92 58 100 62 110 60"
@@ -137,62 +191,37 @@ export default async function HomePage() {
 
       {/* THREE PILLARS */}
       <section className="band" style={{ background: "var(--c-lemon)" }} data-screen-label="03 Три столпа">
-        <p className="band-title">★ что мы делаем лучше всего ★</p>
+        {pillarsBand.title && <p className="band-title">{pillarsBand.title}</p>}
         <div className="cards-grid">
-          <div className="card">
-            <svg className="card-icon" viewBox="0 0 64 64">
-              <use href="#ic-tent" />
-            </svg>
-            <div className="card-eyebrow">домики и палатки</div>
-            <h3 className="card-title">
-              Место,
-              <br />
-              которое пахнет сосной
-            </h3>
-            <p className="card-text">
-              Четыре типа размещения — от классической палатки до утеплённого домика с печкой. Мы сами выбрали каждое
-              место, проверили каждый матрас, и на каждой лужайке оставили немного дикости.
-            </p>
-            <Link href="#accom" className="btn ghost">
-              Смотреть →
-            </Link>
-          </div>
-          <div className="card" style={{ background: "var(--c-blue)" }}>
-            <svg className="card-icon" viewBox="0 0 64 64">
-              <use href="#ic-fire" />
-            </svg>
-            <div className="card-eyebrow">программы</div>
-            <h3 className="card-title">
-              Дни, которые
-              <br />
-              не забываются
-            </h3>
-            <p className="card-text">
-              Утренние заплывы, керамика, сбор трав, вечерние сказки, ночные кинопросмотры. Есть программа для детей
-              3–6, 7–11, подростков 12–16 и раздельная — для взрослых.
-            </p>
-            <Link href="#activities" className="btn ghost">
-              Активности →
-            </Link>
-          </div>
-          <div className="card" style={{ background: "var(--c-salmon)" }}>
-            <svg className="card-icon" viewBox="0 0 64 64">
-              <use href="#ic-heart" />
-            </svg>
-            <div className="card-eyebrow">комьюнити</div>
-            <h3 className="card-title">
-              Люди,
-              <br />
-              которых хочется обнять
-            </h3>
-            <p className="card-text">
-              Мы собираем не больше 80 человек за смену. Достаточно, чтобы было весело. Мало, чтобы каждого запомнить по
-              имени. К концу недели — новые друзья у вашего ребёнка и у вас.
-            </p>
-            <Link href="/about" className="btn ghost">
-              О нас →
-            </Link>
-          </div>
+          {pillarsBand.pillars.map((p, i) => (
+            <div
+              key={p.id ?? i}
+              className="card"
+              style={p.bgColor ? { background: p.bgColor } : undefined}
+            >
+              {p.icon && (
+                <svg className="card-icon" viewBox="0 0 64 64">
+                  <use href={`#${p.icon}`} />
+                </svg>
+              )}
+              {p.eyebrow && <div className="card-eyebrow">{p.eyebrow}</div>}
+              <h3 className="card-title">
+                {p.titleLine1}
+                {p.titleLine2 && (
+                  <>
+                    <br />
+                    {p.titleLine2}
+                  </>
+                )}
+              </h3>
+              {p.text && <p className="card-text">{p.text}</p>}
+              {p.ctaLabel && p.ctaHref && (
+                <Link href={p.ctaHref} className="btn ghost">
+                  {p.ctaLabel}
+                </Link>
+              )}
+            </div>
+          ))}
         </div>
       </section>
 
@@ -201,17 +230,18 @@ export default async function HomePage() {
         <div className="accom-inner">
           <div className="accom-head">
             <div>
-              <p className="eyebrow">где вы будете спать</p>
+              {accomHead.eyebrow && <p className="eyebrow">{accomHead.eyebrow}</p>}
               <h2 className="accom-title">
-                Размещение
-                <br />
-                на четыре лада.
+                {accomHead.titleLine1}
+                {accomHead.titleLine2 && (
+                  <>
+                    <br />
+                    {accomHead.titleLine2}
+                  </>
+                )}
               </h2>
             </div>
-            <p className="accom-desc">
-              Выбирайте по настроению: от простой палатки «как в детстве» до домика с печкой и душем. Бельё, спальники и
-              подушки — мы.
-            </p>
+            {accomHead.description && <p className="accom-desc">{accomHead.description}</p>}
           </div>
           <div className="accom-grid">
             {lodges.map((l, i) => {
@@ -249,11 +279,15 @@ export default async function HomePage() {
       <section className="activities" id="activities" data-screen-label="05 Активности">
         <div className="activities-inner">
           <div className="activities-head">
-            <p className="eyebrow">★ чем занят день ★</p>
+            {activitiesHead.eyebrow && <p className="eyebrow">{activitiesHead.eyebrow}</p>}
             <h2>
-              Маленькие приключения,
-              <br />
-              большие воспоминания.
+              {activitiesHead.titleLine1}
+              {activitiesHead.titleLine2 && (
+                <>
+                  <br />
+                  {activitiesHead.titleLine2}
+                </>
+              )}
             </h2>
           </div>
           <div className="act-grid">
@@ -269,16 +303,22 @@ export default async function HomePage() {
         <div className="schedule-inner">
           <div className="schedule-head">
             <div>
-              <p className="eyebrow">лето 2026</p>
+              {scheduleHead.eyebrow && <p className="eyebrow">{scheduleHead.eyebrow}</p>}
               <h2>
-                шесть смен.
-                <br />
-                выбирайте свою.
+                {scheduleHead.titleLine1}
+                {scheduleHead.titleLine2 && (
+                  <>
+                    <br />
+                    {scheduleHead.titleLine2}
+                  </>
+                )}
               </h2>
             </div>
-            <Link href="/booking" className="btn cream">
-              Зарегистрироваться
-            </Link>
+            {scheduleHead.ctaLabel && scheduleHead.ctaHref && (
+              <Link href={scheduleHead.ctaHref} className="btn cream">
+                {scheduleHead.ctaLabel}
+              </Link>
+            )}
           </div>
           <div className="shifts">
             {shifts.map((s) => (
@@ -300,21 +340,33 @@ export default async function HomePage() {
       <section className="gallery" id="gallery" data-screen-label="07 Галерея">
         <div className="gallery-inner">
           <div className="gallery-head">
-            <p className="eyebrow">★ прошлое лето ★</p>
+            {galleryStrip.eyebrow && <p className="eyebrow">{galleryStrip.eyebrow}</p>}
             <h2>
-              Так выглядит один
-              <br />
-              обычный день у нас.
+              {galleryStrip.titleLine1}
+              {galleryStrip.titleLine2 && (
+                <>
+                  <br />
+                  {galleryStrip.titleLine2}
+                </>
+              )}
             </h2>
           </div>
           <div className="gallery-grid">
-            <div className="g1" data-ph="lake" data-seed="31" />
-            <div className="g2" data-ph="tent" data-seed="32" />
-            <div className="g3" data-ph="campfire" data-seed="33" />
-            <div className="g4" data-ph="meadow" data-seed="34" />
-            <div className="g5" data-ph="forest" data-seed="35" />
-            <div className="g6" data-ph="sunset" data-seed="36" />
-            <div className="g7" data-ph="kids" data-seed="37" />
+            {galleryStrip.tiles.map((tile, i) => {
+              const image = typeof tile.image === "object" ? tile.image : null;
+              const cls = `g${i + 1}`;
+              return (
+                <div
+                  key={tile.id ?? i}
+                  className={cls}
+                  data-ph={tile.mood ?? "lake"}
+                  data-seed={31 + i}
+                  style={{ position: "relative" }}
+                >
+                  <CmsImage media={image} fill sizes="400px" />
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -323,16 +375,17 @@ export default async function HomePage() {
       <section className="pricing" id="pricing" data-screen-label="08 Цены">
         <div className="pricing-inner">
           <div className="pricing-head">
-            <p className="eyebrow">★ пакеты ★</p>
+            {pricingHead.eyebrow && <p className="eyebrow">{pricingHead.eyebrow}</p>}
             <h2>
-              Цены,
-              <br />
-              от которых не больно.
+              {pricingHead.titleLine1}
+              {pricingHead.titleLine2 && (
+                <>
+                  <br />
+                  {pricingHead.titleLine2}
+                </>
+              )}
             </h2>
-            <p>
-              Всё включено, без скрытых платежей: проживание, питание 3 раза в день, программы для детей, вечерние
-              мероприятия, баня, чай с травами.
-            </p>
+            {pricingHead.body && <p>{pricingHead.body}</p>}
           </div>
           <div className="plans">
             {plans.map((p) => (
@@ -356,10 +409,15 @@ export default async function HomePage() {
       <section className="reviews" data-screen-label="09 Отзывы">
         <div className="reviews-inner">
           <div className="reviews-head">
-            <p className="eyebrow">★ пишут семьи ★</p>
+            {reviewsHead.eyebrow && <p className="eyebrow">{reviewsHead.eyebrow}</p>}
             <h2>
-              «Мы уже плачем
-              <br />и хотим вернуться.»
+              {reviewsHead.titleLine1}
+              {reviewsHead.titleLine2 && (
+                <>
+                  <br />
+                  {reviewsHead.titleLine2}
+                </>
+              )}
             </h2>
           </div>
           <div className="reviews-grid">
@@ -390,11 +448,15 @@ export default async function HomePage() {
       <section className="faq" id="faq" data-screen-label="10 FAQ">
         <div className="faq-inner">
           <div className="faq-head">
-            <p className="eyebrow">★ вопросы и ответы ★</p>
+            {faqHead.eyebrow && <p className="eyebrow">{faqHead.eyebrow}</p>}
             <h2>
-              Что вы скорее всего
-              <br />
-              хотите спросить.
+              {faqHead.titleLine1}
+              {faqHead.titleLine2 && (
+                <>
+                  <br />
+                  {faqHead.titleLine2}
+                </>
+              )}
             </h2>
           </div>
           <div className="faq-list">
