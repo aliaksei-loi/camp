@@ -85,3 +85,35 @@ export const getShifts = async (): Promise<Shift[]> => {
   });
   return ShiftsSchema.parse(docs);
 };
+
+// ---------- Plans ----------
+
+const PlanSchema = z.object({
+  id: z.string(),
+  eyebrow: z.string(),
+  name: z.string(),
+  price: z.string(),
+  perUnit: z.string().nullish(),
+  nights: z.string().nullish(),
+  items: z.array(z.object({ id: z.string().nullish(), text: z.string() })).default([]),
+  featured: z.boolean().nullish(),
+  btnClass: z.string().nullish(),
+  order: z.number().nullish(),
+});
+
+export type Plan = z.infer<typeof PlanSchema>;
+
+const PlansSchema = z.array(PlanSchema);
+
+export const getPlans = async (): Promise<Plan[]> => {
+  const { isEnabled: draft } = await draftMode();
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "plans",
+    draft,
+    sort: "order",
+    limit: 100,
+    overrideAccess: draft,
+  });
+  return PlansSchema.parse(docs);
+};
