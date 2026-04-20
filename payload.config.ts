@@ -7,6 +7,8 @@ import { buildConfig } from "payload";
 import sharp from "sharp";
 import { fileURLToPath } from "url";
 
+import { Faqs } from "./collections/Faqs";
+
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
@@ -32,6 +34,7 @@ export default buildConfig({
         { name: "alt", type: "text" },
       ],
     },
+    Faqs,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
