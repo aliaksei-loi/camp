@@ -1,13 +1,21 @@
 import Link from "next/link";
 
-import { getActivities, getFaqs, getPlans, getShifts } from "@/lib/payload/fetchers";
+import { CmsImage } from "@/components/CmsImage";
+import {
+  getActivities,
+  getFaqs,
+  getLodges,
+  getPlans,
+  getShifts,
+} from "@/lib/payload/fetchers";
 
 export default async function HomePage() {
-  const [faqs, activities, shifts, plans] = await Promise.all([
+  const [faqs, activities, shifts, plans, lodges] = await Promise.all([
     getFaqs(),
     getActivities(),
     getShifts(),
     getPlans(),
+    getLodges(),
   ]);
 
   return (
@@ -204,20 +212,33 @@ export default async function HomePage() {
             </p>
           </div>
           <div className="accom-grid">
-            <Lodge mood="tent" seed={11} name="Палатка «Сосна»" meta="до 4 человек · деревянный настил · матрасы-пенка" price="от 140 р / ночь" tag="★ Популярно" />
-            <Lodge mood="lake" seed={12} name="Глэмпинг «Озеро»" meta="до 3 человек · кровать, свет, розетка · у воды" price="от 210 р / ночь" />
-            <Lodge mood="forest" seed={13} name="Домик «Грибок»" meta="до 5 человек · печка-буржуйка · душ рядом" price="от 280 р / ночь" />
-            <Lodge
-              mood="sunset"
-              seed={14}
-              name="Шатёр «Большая семья»"
-              meta="до 8 человек · высокие стены · отдельная зона"
-              price="от 360 р / ночь"
-              tag="Новое"
-              tagStyle={{ background: "var(--c-lime)", color: "var(--c-rust)" }}
-            />
-            <Lodge mood="dune" seed={15} name="Домик-студия «Тишина»" meta="для двоих · свой санузел · вид на рассвет" price="от 320 р / ночь" />
-            <Lodge mood="meadow" seed={16} name="Своя палатка" meta="место под собственную палатку · вода и душ" price="от 60 р / ночь" />
+            {lodges.map((l, i) => {
+              const image = typeof l.image === "object" ? l.image : null;
+              const tagStyle =
+                l.tagBg || l.tagColor
+                  ? { background: l.tagBg ?? undefined, color: l.tagColor ?? undefined }
+                  : undefined;
+              return (
+                <div key={l.id} className="lodge">
+                  <div className="lodge-img" data-ph={l.mood ?? "tent"} data-seed={11 + i}>
+                    <CmsImage media={image} fill sizes="400px" />
+                    {l.tag && (
+                      <span className="lodge-tag" style={tagStyle}>
+                        {l.tag}
+                      </span>
+                    )}
+                  </div>
+                  <div className="lodge-body">
+                    <h4 className="lodge-name">{l.name}</h4>
+                    <p className="lodge-meta">{l.meta}</p>
+                    <div className="lodge-price">
+                      <strong>{l.price}</strong>
+                      <span className="lodge-link">Выбрать</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -384,38 +405,6 @@ export default async function HomePage() {
         </div>
       </section>
     </>
-  );
-}
-
-type LodgeProps = {
-  mood: string;
-  seed: number;
-  name: string;
-  meta: string;
-  price: string;
-  tag?: string;
-  tagStyle?: React.CSSProperties;
-};
-
-function Lodge({ mood, seed, name, meta, price, tag, tagStyle }: LodgeProps) {
-  return (
-    <div className="lodge">
-      <div className="lodge-img" data-ph={mood} data-seed={seed}>
-        {tag && (
-          <span className="lodge-tag" style={tagStyle}>
-            {tag}
-          </span>
-        )}
-      </div>
-      <div className="lodge-body">
-        <h4 className="lodge-name">{name}</h4>
-        <p className="lodge-meta">{meta}</p>
-        <div className="lodge-price">
-          <strong>{price}</strong>
-          <span className="lodge-link">Выбрать</span>
-        </div>
-      </div>
-    </div>
   );
 }
 
