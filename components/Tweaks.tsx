@@ -40,6 +40,12 @@ export function Tweaks() {
     }
   }, [s]);
 
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener("tweaks:open", onOpen);
+    return () => window.removeEventListener("tweaks:open", onOpen);
+  }, []);
+
   const set = <K extends keyof State>(k: K, v: State[K]) => setS((prev) => ({ ...prev, [k]: v }));
 
   return (
