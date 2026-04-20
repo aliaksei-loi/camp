@@ -6,16 +6,18 @@ import {
   getFaqs,
   getLodges,
   getPlans,
+  getReviews,
   getShifts,
 } from "@/lib/payload/fetchers";
 
 export default async function HomePage() {
-  const [faqs, activities, shifts, plans, lodges] = await Promise.all([
+  const [faqs, activities, shifts, plans, lodges, reviews] = await Promise.all([
     getFaqs(),
     getActivities(),
     getShifts(),
     getPlans(),
     getLodges(),
+    getReviews(),
   ]);
 
   return (
@@ -361,27 +363,25 @@ export default async function HomePage() {
             </h2>
           </div>
           <div className="reviews-grid">
-            <Review
-              text="Первый раз привезли детей в кемпинг — боялась, что будет тяжело. В итоге старший (9 лет) выучил имена всех деревьев, младшая (4) впервые ела суп сама. Мы вернёмся обязательно."
-              mood="kids"
-              seed={51}
-              name="Алёна М."
-              meta="Минск · 2 детей"
-            />
-            <Review
-              text="Мы ездили втроём (я, муж, подросток). Думали — подростку будет скучно. Его первая фраза на обратной дороге: «Я хочу сюда в августе снова». Всё."
-              mood="sunset"
-              seed={52}
-              name="Ирина П."
-              meta="Гродно · семья"
-            />
-            <Review
-              text="Отдельное спасибо команде — они заметили, что мой ребёнок стеснялся, и мягко подвели его к группе. К концу смены он вёл квест сам. Это дорогого стоит."
-              mood="forest"
-              seed={53}
-              name="Денис К."
-              meta="Брест · папа"
-            />
+            {reviews.map((r, i) => {
+              const avatar = typeof r.authorPhoto === "object" ? r.authorPhoto : null;
+              const stars = "★".repeat(r.rating ?? 5);
+              return (
+                <div key={r.id} className="review">
+                  <div className="review-stars">{stars}</div>
+                  <p className="review-text">{r.text}</p>
+                  <div className="review-author">
+                    <div className="review-avatar" data-ph={r.mood ?? "kids"} data-seed={51 + i}>
+                      <CmsImage media={avatar} fill sizes="64px" />
+                    </div>
+                    <div>
+                      <div className="review-name">{r.authorName}</div>
+                      <div>{r.authorMeta}</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -476,24 +476,6 @@ function Plan({ eyebrow, name, price, perUnit, nights, items, featured, btnClass
       <Link href="/booking" className={`btn ${btnClass ?? ""}`} style={{ width: "100%" }}>
         Выбрать пакет
       </Link>
-    </div>
-  );
-}
-
-type ReviewProps = { text: string; mood: string; seed: number; name: string; meta: string };
-
-function Review({ text, mood, seed, name, meta }: ReviewProps) {
-  return (
-    <div className="review">
-      <div className="review-stars">★★★★★</div>
-      <p className="review-text">{text}</p>
-      <div className="review-author">
-        <div className="review-avatar" data-ph={mood} data-seed={seed} />
-        <div>
-          <div className="review-name">{name}</div>
-          <div>{meta}</div>
-        </div>
-      </div>
     </div>
   );
 }

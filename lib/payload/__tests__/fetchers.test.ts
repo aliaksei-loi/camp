@@ -20,6 +20,7 @@ import {
   getFaqs,
   getLodges,
   getPlans,
+  getReviews,
   getShifts,
   getTeamMembers,
 } from "../fetchers";
@@ -364,5 +365,39 @@ describe("getLodges", () => {
       docs: [{ id: "l1", name: "X", meta: "y" }],
     });
     await expect(getLodges()).rejects.toThrow();
+  });
+});
+
+describe("getReviews", () => {
+  beforeEach(() => {
+    findMock.mockReset();
+    draftModeMock.mockReset();
+  });
+
+  it("returns parsed reviews with populated avatar", async () => {
+    findMock.mockResolvedValue({
+      docs: [
+        { id: "r1", text: "…", authorName: "A", authorMeta: "M", rating: 5 },
+        { id: "r2", text: "…", authorName: "B", authorMeta: "M2", authorPhoto: { id: "m1", url: "https://x/y.jpg" } },
+      ],
+    });
+    const reviews = await getReviews();
+    expect(reviews).toHaveLength(2);
+    expect(reviews[1].authorPhoto).toMatchObject({ url: "https://x/y.jpg" });
+  });
+
+  it("passes depth=1", async () => {
+    findMock.mockResolvedValue({ docs: [] });
+    await getReviews();
+    expect(findMock).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: "reviews", depth: 1 }),
+    );
+  });
+
+  it("rejects malformed docs (Zod — missing text)", async () => {
+    findMock.mockResolvedValue({
+      docs: [{ id: "r1", authorName: "A", authorMeta: "M" }],
+    });
+    await expect(getReviews()).rejects.toThrow();
   });
 });

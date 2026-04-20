@@ -186,3 +186,31 @@ export const getLodges = async (): Promise<Lodge[]> => {
   });
   return LodgesSchema.parse(docs);
 };
+
+// ---------- Reviews ----------
+
+const ReviewSchema = z.object({
+  id: z.string(),
+  text: z.string(),
+  authorName: z.string(),
+  authorMeta: z.string(),
+  authorPhoto: z.union([z.string(), MediaRefSchema]).nullish(),
+  rating: z.number().nullish(),
+  mood: z.string().nullish(),
+  order: z.number().nullish(),
+});
+
+export type Review = z.infer<typeof ReviewSchema>;
+
+const ReviewsSchema = z.array(ReviewSchema);
+
+export const getReviews = async (): Promise<Review[]> => {
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "reviews",
+    sort: "order",
+    limit: 100,
+    depth: 1,
+  });
+  return ReviewsSchema.parse(docs);
+};
