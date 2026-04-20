@@ -5,39 +5,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-type NavLink = {
-  href: string;
-  label: string;
-  id: string;
-  match: (path: string) => boolean;
+type NavLinkDef = { label: string; href: string; id?: string | null };
+type PinnedLinkDef = { label?: string | null; href?: string | null } | null;
+
+type Props = {
+  scrollLinks: NavLinkDef[];
+  pinnedLink: PinnedLinkDef;
+  marqueeItems: { text: string; id?: string | null }[];
+  brandLabel?: string | null;
+  logoUrl?: string | null;
 };
 
-const scrollLinks: NavLink[] = [
-  { href: "/", label: "Главная", id: "home", match: (p) => p === "/" },
-  {
-    href: "/about",
-    label: "О нас",
-    id: "about",
-    match: (p) => p.startsWith("/about"),
-  },
-  { href: "/#accom", label: "Размещение", id: "stay", match: () => false },
-  { href: "/#schedule", label: "Смены", id: "shifts", match: () => false },
-  {
-    href: "/gallery",
-    label: "Галерея",
-    id: "gallery",
-    match: (p) => p.startsWith("/gallery"),
-  },
-];
-
-const pinnedLink: NavLink = {
-  href: "/booking",
-  label: "Регистрация",
-  id: "book",
-  match: (p) => p.startsWith("/booking"),
+const matches = (href: string, path: string): boolean => {
+  if (href === "/") return path === "/";
+  if (href.includes("#")) return false;
+  return path.startsWith(href);
 };
 
-export function Nav() {
+export function Nav({ scrollLinks, pinnedLink, marqueeItems, brandLabel, logoUrl }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
@@ -53,36 +38,38 @@ export function Nav() {
     };
   }, [open]);
 
+  const isPinnedActive = pinnedLink?.href ? matches(pinnedLink.href, pathname) : false;
+
   return (
     <>
       <nav className="topbar" aria-label="Основная навигация">
         <Link href="/" className="topbar-brand">
-          <Image
-            src="/logo.png"
-            alt=""
-            width={384}
-            height={388}
-            aria-hidden="true"
-          />
-          <span className="topbar-brand-text">Belcreation</span>
+          {logoUrl ? (
+            <Image src={logoUrl} alt="" width={384} height={388} aria-hidden="true" />
+          ) : (
+            <Image src="/logo.png" alt="" width={384} height={388} aria-hidden="true" />
+          )}
+          <span className="topbar-brand-text">{brandLabel ?? "Belcreation"}</span>
         </Link>
         <div className="topbar-links">
-          {scrollLinks.map((l) => (
+          {scrollLinks.map((l, i) => (
             <Link
-              key={l.id}
-              className={`topbar-link ${l.match(pathname) ? "active" : ""}`}
+              key={l.id ?? `${l.href}-${i}`}
+              className={`topbar-link ${matches(l.href, pathname) ? "active" : ""}`}
               href={l.href}
             >
               {l.label}
             </Link>
           ))}
         </div>
-        <Link
-          className={`topbar-link topbar-link-pinned ${pinnedLink.match(pathname) ? "active" : ""}`}
-          href={pinnedLink.href}
-        >
-          {pinnedLink.label}
-        </Link>
+        {pinnedLink?.label && pinnedLink?.href && (
+          <Link
+            className={`topbar-link topbar-link-pinned ${isPinnedActive ? "active" : ""}`}
+            href={pinnedLink.href}
+          >
+            {pinnedLink.label}
+          </Link>
+        )}
         <button
           type="button"
           className="topbar-menu-btn"
@@ -129,10 +116,10 @@ export function Nav() {
             </svg>
           </button>
           <nav className="mobile-drawer-links" aria-label="Меню">
-            {scrollLinks.map((l) => (
+            {scrollLinks.map((l, i) => (
               <Link
-                key={l.id}
-                className={`mobile-drawer-link ${l.match(pathname) ? "active" : ""}`}
+                key={l.id ?? `${l.href}-${i}`}
+                className={`mobile-drawer-link ${matches(l.href, pathname) ? "active" : ""}`}
                 href={l.href}
                 onClick={close}
               >
@@ -152,28 +139,20 @@ export function Nav() {
           </button>
         </div>
       </div>
-      <div className="marquee-strip">
-        <div className="marquee-track">
-          <span>
-            <span>BELCREATION ★ СЕМЕЙНЫЙ КЕМПИНГ</span>
-            <span className="marquee-star">✻</span>
-            <span>ЛЕТО 2026</span>
-            <span className="marquee-star">✻</span>
-            <span>3 ОЗЕРА · 6 СМЕН · 40 ПАЛАТОК</span>
-            <span className="marquee-star">✻</span>
-            <span>СЛЫШНО ТОЛЬКО КОСТЁР И ДЕТСКИЙ СМЕХ</span>
-            <span className="marquee-star">✻</span>
-            <span>BELCREATION ★ СЕМЕЙНЫЙ КЕМПИНГ</span>
-            <span className="marquee-star">✻</span>
-            <span>ЛЕТО 2026</span>
-            <span className="marquee-star">✻</span>
-            <span>3 ОЗЕРА · 6 СМЕН · 40 ПАЛАТОК</span>
-            <span className="marquee-star">✻</span>
-            <span>СЛЫШНО ТОЛЬКО КОСТЁР И ДЕТСКИЙ СМЕХ</span>
-            <span className="marquee-star">✻</span>
-          </span>
+      {marqueeItems.length > 0 && (
+        <div className="marquee-strip">
+          <div className="marquee-track">
+            <span>
+              {[...marqueeItems, ...marqueeItems].map((m, i) => (
+                <span key={`${m.id ?? i}-${i}`}>
+                  <span>{m.text}</span>
+                  <span className="marquee-star">✻</span>
+                </span>
+              ))}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

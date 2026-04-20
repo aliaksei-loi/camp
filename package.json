@@ -22,6 +22,7 @@
     "seed:home": "tsx --env-file=.env.local scripts/seed-home.ts",
     "seed:about": "tsx --env-file=.env.local scripts/seed-about.ts",
     "seed:gallery": "tsx --env-file=.env.local scripts/seed-gallery.ts",
+    "seed:chrome": "tsx --env-file=.env.local scripts/seed-chrome.ts",
     "harvest": "tsx scripts/harvest-old-site.ts"
   },
   "dependencies": {

@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { IconSprite } from "@/components/IconSprite";
 import { Tweaks } from "@/components/Tweaks";
 import { PlaceholderFiller } from "@/components/PlaceholderFiller";
+import { getFooter, getNav, getSiteSettings } from "@/lib/payload/fetchers";
 
 const gloria = Caveat({
   variable: "--font-gloria",
@@ -35,11 +36,27 @@ const bricolage = Bricolage_Grotesque({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Belcreation — семейный кемпинг у озера",
-  description:
-    "Belcreation — семейный кемпинг на берегу озера Нарочь. Палатки, домики, костры, программы для детей и взрослых. Лето 2026.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const ogImage = typeof settings.defaultSEO?.ogImage === "object" ? settings.defaultSEO.ogImage : null;
+  return {
+    title: {
+      default:
+        settings.defaultSEO?.title ??
+        settings.siteName ??
+        "Belcreation — семейный кемпинг у озера",
+      template: `%s — ${settings.siteName ?? "Belcreation"}`,
+    },
+    description:
+      settings.defaultSEO?.description ??
+      "Belcreation — семейный кемпинг на берегу озера Нарочь. Палатки, домики, костры, программы для детей и взрослых. Лето 2026.",
+    openGraph: ogImage?.url
+      ? {
+          images: [{ url: ogImage.url, width: ogImage.width ?? undefined, height: ogImage.height ?? undefined }],
+        }
+      : undefined,
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -48,7 +65,15 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const [nav, footer, settings] = await Promise.all([
+    getNav(),
+    getFooter(),
+    getSiteSettings(),
+  ]);
+
+  const logo = typeof settings.logo === "object" ? settings.logo : null;
+
   return (
     <html
       lang="ru"
@@ -58,10 +83,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${gloria.variable} ${nunito.variable} ${dmSerif.variable} ${bricolage.variable}`}
     >
       <body>
-        <Nav />
+        <Nav
+          scrollLinks={nav.scrollLinks}
+          pinnedLink={nav.pinnedLink ?? null}
+          marqueeItems={nav.marqueeItems}
+          brandLabel={nav.brandLabel ?? null}
+          logoUrl={logo?.url ?? null}
+        />
         <IconSprite />
         {children}
-        <Footer />
+        <Footer
+          cta={footer.cta ?? null}
+          brand={footer.brand ?? null}
+          navColumn={footer.navColumn ?? null}
+          contactColumn={footer.contactColumn ?? null}
+          socialColumn={footer.socialColumn ?? null}
+          bottomLeft={footer.bottomLeft ?? null}
+          bottomRight={footer.bottomRight ?? null}
+        />
         {process.env.NODE_ENV !== "production" && <Tweaks />}
         <PlaceholderFiller />
       </body>

@@ -486,3 +486,109 @@ export const getGalleryPage = async (): Promise<GalleryPage> => {
   });
   return GalleryPageSchema.parse(doc);
 };
+
+// ---------- Nav global ----------
+
+const NavSchema = z.object({
+  brandLabel: TextLike,
+  scrollLinks: z
+    .array(
+      z.object({
+        id: z.string().nullish(),
+        label: z.string(),
+        href: z.string(),
+      }),
+    )
+    .default([]),
+  pinnedLink: z
+    .object({
+      label: TextLike,
+      href: TextLike,
+    })
+    .nullish(),
+  marqueeItems: z
+    .array(z.object({ id: z.string().nullish(), text: z.string() }))
+    .default([]),
+});
+
+export type Nav = z.infer<typeof NavSchema>;
+
+export const getNav = async (): Promise<Nav> => {
+  const payload = await getPayload({ config });
+  const doc = await payload.findGlobal({ slug: "nav", depth: 1 });
+  return NavSchema.parse(doc);
+};
+
+// ---------- Footer global ----------
+
+const FooterSchema = z.object({
+  cta: z
+    .object({ heading: TextLike, body: TextLike, ctaLabel: TextLike, ctaHref: TextLike })
+    .nullish(),
+  brand: z.object({ name: TextLike, description: TextLike }).nullish(),
+  navColumn: z
+    .object({
+      heading: TextLike,
+      links: z
+        .array(z.object({ id: z.string().nullish(), label: z.string(), href: z.string() }))
+        .default([]),
+    })
+    .nullish(),
+  contactColumn: z
+    .object({
+      heading: TextLike,
+      items: z.array(z.object({ id: z.string().nullish(), text: z.string() })).default([]),
+    })
+    .nullish(),
+  socialColumn: z
+    .object({
+      heading: TextLike,
+      items: z
+        .array(z.object({ id: z.string().nullish(), label: z.string(), href: TextLike }))
+        .default([]),
+    })
+    .nullish(),
+  bottomLeft: TextLike,
+  bottomRight: TextLike,
+});
+
+export type Footer = z.infer<typeof FooterSchema>;
+
+export const getFooter = async (): Promise<Footer> => {
+  const payload = await getPayload({ config });
+  const doc = await payload.findGlobal({ slug: "footer", depth: 1 });
+  return FooterSchema.parse(doc);
+};
+
+// ---------- Site settings global ----------
+
+const SiteSettingsSchema = z.object({
+  siteName: TextLike,
+  defaultSEO: z
+    .object({
+      title: TextLike,
+      description: TextLike,
+      ogImage: z.union([z.string(), MediaRefSchema]).nullish(),
+    })
+    .nullish(),
+  logo: z.union([z.string(), MediaRefSchema]).nullish(),
+  contact: z
+    .object({ email: TextLike, phone: TextLike, location: TextLike })
+    .nullish(),
+  social: z
+    .object({
+      telegramHandle: TextLike,
+      telegramUrl: TextLike,
+      instagramUrl: TextLike,
+      youtubeUrl: TextLike,
+    })
+    .nullish(),
+});
+
+export type SiteSettings = z.infer<typeof SiteSettingsSchema>;
+
+export const getSiteSettings = async (): Promise<SiteSettings> => {
+  const payload = await getPayload({ config });
+  const doc = await payload.findGlobal({ slug: "site-settings", depth: 1 });
+  return SiteSettingsSchema.parse(doc);
+};
