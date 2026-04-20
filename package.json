@@ -7,9 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "generate:types": "pnpm payload generate:types",
-    "generate:importmap": "pnpm payload generate:importmap"
+    "generate:importmap": "pnpm payload generate:importmap",
+    "seed:faqs": "tsx --env-file=.env.local scripts/seed-faqs.ts"
   },
   "dependencies": {
     "@payloadcms/db-mongodb": "^3.83.0",
@@ -22,16 +25,20 @@
     "payload": "^3.83.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "sharp": "^0.34.5"
+    "sharp": "^0.34.5",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^4.1.4",
     "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
-    "typescript": "^5"
+    "tsx": "^4.21.0",
+    "typescript": "^5",
+    "vitest": "^4.1.4"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
