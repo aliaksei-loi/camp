@@ -1,12 +1,13 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
-const { findMock, draftModeMock } = vi.hoisted(() => ({
+const { findMock, findGlobalMock, draftModeMock } = vi.hoisted(() => ({
   findMock: vi.fn(),
+  findGlobalMock: vi.fn(),
   draftModeMock: vi.fn(),
 }));
 
 vi.mock("payload", () => ({
-  getPayload: vi.fn(async () => ({ find: findMock })),
+  getPayload: vi.fn(async () => ({ find: findMock, findGlobal: findGlobalMock })),
 }));
 
 vi.mock("next/headers", () => ({
@@ -18,6 +19,7 @@ vi.mock("@payload-config", () => ({ default: {} }));
 import {
   getActivities,
   getFaqs,
+  getHome,
   getLodges,
   getPlans,
   getReviews,
@@ -399,5 +401,40 @@ describe("getReviews", () => {
       docs: [{ id: "r1", authorName: "A", authorMeta: "M" }],
     });
     await expect(getReviews()).rejects.toThrow();
+  });
+});
+
+describe("getHome", () => {
+  beforeEach(() => {
+    findGlobalMock.mockReset();
+    draftModeMock.mockReset();
+    draftModeMock.mockResolvedValue({ isEnabled: false });
+  });
+
+  it("returns parsed Home global", async () => {
+    findGlobalMock.mockResolvedValue({
+      hero: { tag: "hi", titleLine1: "summer" },
+      pillarsBand: { title: "band", pillars: [{ icon: "ic-tent", eyebrow: "a" }] },
+      galleryStrip: { tiles: [{ image: { id: "m1", url: "https://x/y.jpg" } }] },
+    });
+
+    const home = await getHome();
+    expect(home.hero?.tag).toBe("hi");
+    expect(home.pillarsBand?.pillars).toHaveLength(1);
+    expect(home.galleryStrip?.tiles[0].image).toMatchObject({ url: "https://x/y.jpg" });
+  });
+
+  it("requests draft + overrideAccess when draft mode is on", async () => {
+    draftModeMock.mockResolvedValue({ isEnabled: true });
+    findGlobalMock.mockResolvedValue({});
+    await getHome();
+    expect(findGlobalMock).toHaveBeenCalledWith(
+      expect.objectContaining({ slug: "home", draft: true, overrideAccess: true, depth: 1 }),
+    );
+  });
+
+  it("tolerates empty global (all fields optional in schema)", async () => {
+    findGlobalMock.mockResolvedValue({});
+    await expect(getHome()).resolves.toBeTruthy();
   });
 });

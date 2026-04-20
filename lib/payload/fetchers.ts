@@ -214,3 +214,130 @@ export const getReviews = async (): Promise<Review[]> => {
   });
   return ReviewsSchema.parse(docs);
 };
+
+// ---------- Home global ----------
+
+const TextLike = z.string().nullish();
+
+const HomeSchema = z.object({
+  hero: z
+    .object({
+      tag: TextLike,
+      titleLine1: TextLike,
+      titleLine2: TextLike,
+      titleLine3: TextLike,
+      description: TextLike,
+      image: z.union([z.string(), MediaRefSchema]).nullish(),
+      ctaPrimaryLabel: TextLike,
+      ctaPrimaryHref: TextLike,
+      ctaSecondaryLabel: TextLike,
+      ctaSecondaryHref: TextLike,
+      stickerLine1: TextLike,
+      stickerLine2: TextLike,
+      stickerLine3: TextLike,
+    })
+    .nullish(),
+  intro: z
+    .object({
+      eyebrow: TextLike,
+      headPart1: TextLike,
+      headIcon1: TextLike,
+      headPart2: TextLike,
+      headIcon2: TextLike,
+      headPart3: TextLike,
+      sub: TextLike,
+    })
+    .nullish(),
+  quizBox: z
+    .object({
+      pill: TextLike,
+      title: TextLike,
+      ctaLabel: TextLike,
+      ctaHref: TextLike,
+    })
+    .nullish(),
+  pillarsBand: z
+    .object({
+      title: TextLike,
+      pillars: z
+        .array(
+          z.object({
+            id: z.string().nullish(),
+            icon: TextLike,
+            eyebrow: TextLike,
+            titleLine1: TextLike,
+            titleLine2: TextLike,
+            text: TextLike,
+            ctaLabel: TextLike,
+            ctaHref: TextLike,
+            bgColor: TextLike,
+          }),
+        )
+        .default([]),
+    })
+    .nullish(),
+  accomHead: z
+    .object({
+      eyebrow: TextLike,
+      titleLine1: TextLike,
+      titleLine2: TextLike,
+      description: TextLike,
+    })
+    .nullish(),
+  activitiesHead: z
+    .object({ eyebrow: TextLike, titleLine1: TextLike, titleLine2: TextLike })
+    .nullish(),
+  scheduleHead: z
+    .object({
+      eyebrow: TextLike,
+      titleLine1: TextLike,
+      titleLine2: TextLike,
+      ctaLabel: TextLike,
+      ctaHref: TextLike,
+    })
+    .nullish(),
+  galleryStrip: z
+    .object({
+      eyebrow: TextLike,
+      titleLine1: TextLike,
+      titleLine2: TextLike,
+      tiles: z
+        .array(
+          z.object({
+            id: z.string().nullish(),
+            image: z.union([z.string(), MediaRefSchema]).nullish(),
+            mood: TextLike,
+          }),
+        )
+        .default([]),
+    })
+    .nullish(),
+  pricingHead: z
+    .object({
+      eyebrow: TextLike,
+      titleLine1: TextLike,
+      titleLine2: TextLike,
+      body: TextLike,
+    })
+    .nullish(),
+  reviewsHead: z
+    .object({ eyebrow: TextLike, titleLine1: TextLike, titleLine2: TextLike })
+    .nullish(),
+  faqHead: z
+    .object({ eyebrow: TextLike, titleLine1: TextLike, titleLine2: TextLike })
+    .nullish(),
+});
+
+export type Home = z.infer<typeof HomeSchema>;
+
+export const getHome = async (): Promise<Home> => {
+  const { isEnabled: draft } = await draftMode();
+  const payload = await getPayload({ config });
+  const doc = await payload.findGlobal({
+    slug: "home",
+    draft,
+    depth: 1,
+    overrideAccess: draft,
+  });
+  return HomeSchema.parse(doc);
+};
