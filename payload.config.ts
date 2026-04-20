@@ -16,8 +16,11 @@ import { Reviews } from "./collections/Reviews";
 import { Shifts } from "./collections/Shifts";
 import { TeamMembers } from "./collections/TeamMembers";
 import { AboutPage } from "./globals/AboutPage";
+import { Footer } from "./globals/Footer";
 import { GalleryPage } from "./globals/GalleryPage";
 import { Home } from "./globals/Home";
+import { Nav } from "./globals/Nav";
+import { SiteSettings } from "./globals/SiteSettings";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -54,7 +57,7 @@ export default buildConfig({
     Reviews,
     GalleryPhotos,
   ],
-  globals: [Home, AboutPage, GalleryPage],
+  globals: [Home, AboutPage, GalleryPage, Nav, Footer, SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
@@ -70,7 +73,7 @@ export default buildConfig({
       token: process.env.BLOB_READ_WRITE_TOKEN || "",
     }),
     seoPlugin({
-      collections: [],
+      globals: ["home", "about-page", "gallery-page"],
       uploadsCollection: "media",
       generateTitle: ({ doc }) =>
         `${(doc as { title?: string }).title ?? "Belcreation"}`,

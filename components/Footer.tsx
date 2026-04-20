@@ -1,64 +1,102 @@
 import Link from "next/link";
+import { Fragment } from "react";
 
-export function Footer() {
+type Props = {
+  cta?: {
+    heading?: string | null;
+    body?: string | null;
+    ctaLabel?: string | null;
+    ctaHref?: string | null;
+  } | null;
+  brand?: { name?: string | null; description?: string | null } | null;
+  navColumn?: {
+    heading?: string | null;
+    links: { label: string; href: string; id?: string | null }[];
+  } | null;
+  contactColumn?: {
+    heading?: string | null;
+    items: { text: string; id?: string | null }[];
+  } | null;
+  socialColumn?: {
+    heading?: string | null;
+    items: { label: string; href?: string | null; id?: string | null }[];
+  } | null;
+  bottomLeft?: string | null;
+  bottomRight?: string | null;
+};
+
+export function Footer({
+  cta,
+  brand,
+  navColumn,
+  contactColumn,
+  socialColumn,
+  bottomLeft,
+  bottomRight,
+}: Props) {
   return (
     <>
-      <section className="cta-strip">
-        <h3>Лес уже ждёт. Присоединяйтесь.</h3>
-        <p>
-          Каждое лето у нас 6 смен, и места всегда заканчиваются к маю. Зарегистрируйтесь на свою смену прямо сейчас —
-          даже если ещё не выбрали даты.
-        </p>
-        <Link href="/booking" className="btn cream lg">
-          Зарегистрироваться
-        </Link>
-      </section>
+      {cta && (cta.heading || cta.body || cta.ctaLabel) && (
+        <section className="cta-strip">
+          {cta.heading && <h3>{cta.heading}</h3>}
+          {cta.body && <p>{cta.body}</p>}
+          {cta.ctaLabel && cta.ctaHref && (
+            <Link href={cta.ctaHref} className="btn cream lg">
+              {cta.ctaLabel}
+            </Link>
+          )}
+        </section>
+      )}
       <footer className="footer">
         <div className="footer-inner">
           <div>
-            <div className="footer-brand">belcreation</div>
-            <p style={{ maxWidth: 360, opacity: 0.8, fontSize: 14 }}>
-              Семейный кемпинг на берегу озера. Три смены в июне, три в июле-августе. Палатки, домики, костры, долгие
-              разговоры под звёздами.
-            </p>
+            <div className="footer-brand">{brand?.name ?? "belcreation"}</div>
+            {brand?.description && (
+              <p style={{ maxWidth: 360, opacity: 0.8, fontSize: 14 }}>{brand.description}</p>
+            )}
           </div>
-          <div>
-            <h4>Навигация</h4>
-            <ul>
-              <li>
-                <Link href="/">Главная</Link>
-              </li>
-              <li>
-                <Link href="/about">О нас</Link>
-              </li>
-              <li>
-                <Link href="/#accom">Размещение</Link>
-              </li>
-              <li>
-                <Link href="/booking">Регистрация</Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4>Контакты</h4>
-            <ul>
-              <li>+375 29 123 45 67</li>
-              <li>hello@belcreation.camp</li>
-              <li>Минская обл., оз. Нарочь</li>
-            </ul>
-          </div>
-          <div>
-            <h4>Мы в сети</h4>
-            <ul>
-              <li>Telegram</li>
-              <li>Instagram</li>
-              <li>YouTube</li>
-            </ul>
-          </div>
+          {navColumn && (navColumn.heading || navColumn.links.length > 0) && (
+            <div>
+              {navColumn.heading && <h4>{navColumn.heading}</h4>}
+              <ul>
+                {navColumn.links.map((l, i) => (
+                  <li key={l.id ?? `${l.href}-${i}`}>
+                    <Link href={l.href}>{l.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {contactColumn && (contactColumn.heading || contactColumn.items.length > 0) && (
+            <div>
+              {contactColumn.heading && <h4>{contactColumn.heading}</h4>}
+              <ul>
+                {contactColumn.items.map((item, i) => (
+                  <li key={item.id ?? i}>{item.text}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {socialColumn && (socialColumn.heading || socialColumn.items.length > 0) && (
+            <div>
+              {socialColumn.heading && <h4>{socialColumn.heading}</h4>}
+              <ul>
+                {socialColumn.items.map((item, i) => (
+                  <li key={item.id ?? `${item.label}-${i}`}>
+                    {item.href ? (
+                      <Link href={item.href}>{item.label}</Link>
+                    ) : (
+                      <Fragment>{item.label}</Fragment>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
         <div className="footer-bottom">
-          <span>© 2026 BELCREATION CAMP · СДЕЛАНО С ЛЮБОВЬЮ</span>
-          <span>★ МИНСК — НАРОЧЬ ★</span>
+          {bottomLeft && <span>{bottomLeft}</span>}
+          {bottomRight && <span>{bottomRight}</span>}
         </div>
       </footer>
     </>
