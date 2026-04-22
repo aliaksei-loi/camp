@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 
+import { generatePreviewURL, livePreview } from "@/lib/payload/preview";
 import { revalidateOnPublish } from "@/lib/payload/revalidate-on-publish";
 
 export const TeamMembers: CollectionConfig = {
@@ -7,6 +8,8 @@ export const TeamMembers: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "role", "order"],
+    preview: generatePreviewURL("/about"),
+    livePreview: livePreview("/about"),
   },
   access: {
     read: () => true,
