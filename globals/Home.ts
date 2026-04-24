@@ -1,10 +1,15 @@
 import type { GlobalConfig } from "payload";
 
+import { generatePreviewURL, livePreview } from "@/lib/payload/preview";
 import { revalidateOnPublish } from "@/lib/payload/revalidate-on-publish";
 
 export const Home: GlobalConfig = {
   slug: "home",
   versions: { drafts: true },
+  admin: {
+    preview: generatePreviewURL("/"),
+    livePreview: livePreview("/"),
+  },
   access: {
     read: ({ req: { user } }) => {
       if (user) return true;
@@ -127,16 +132,6 @@ export const Home: GlobalConfig = {
             { name: "mood", type: "text", admin: { description: "Placeholder fallback mood (deprecated once real photo is uploaded)" } },
           ],
         },
-      ],
-    },
-    {
-      name: "pricingHead",
-      type: "group",
-      fields: [
-        { name: "eyebrow", type: "text" },
-        { name: "titleLine1", type: "text" },
-        { name: "titleLine2", type: "text" },
-        { name: "body", type: "textarea" },
       ],
     },
     {

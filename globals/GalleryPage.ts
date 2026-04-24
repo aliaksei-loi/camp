@@ -1,10 +1,15 @@
 import type { GlobalConfig } from "payload";
 
+import { generatePreviewURL, livePreview } from "@/lib/payload/preview";
 import { revalidateOnPublish } from "@/lib/payload/revalidate-on-publish";
 
 export const GalleryPage: GlobalConfig = {
   slug: "gallery-page",
   versions: { drafts: true },
+  admin: {
+    preview: generatePreviewURL("/gallery"),
+    livePreview: livePreview("/gallery"),
+  },
   access: { read: () => true },
   hooks: {
     afterChange: [revalidateOnPublish("/gallery")],

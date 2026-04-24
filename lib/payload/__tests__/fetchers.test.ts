@@ -24,7 +24,6 @@ import {
   getGalleryPhotos,
   getHome,
   getLodges,
-  getPlans,
   getReviews,
   getShifts,
   getTeamMembers,
@@ -215,57 +214,6 @@ describe("getShifts", () => {
   });
 });
 
-describe("getPlans", () => {
-  beforeEach(() => {
-    findMock.mockReset();
-    draftModeMock.mockReset();
-    draftModeMock.mockResolvedValue({ isEnabled: false });
-  });
-
-  it("returns parsed plans list with items array", async () => {
-    findMock.mockResolvedValue({
-      docs: [
-        {
-          id: "p1",
-          eyebrow: "базовый",
-          name: "Палаточник",
-          price: "1 400",
-          items: [{ id: "i1", text: "foo" }, { id: "i2", text: "bar" }],
-          featured: false,
-          order: 1,
-        },
-        {
-          id: "p2",
-          eyebrow: "всё включено",
-          name: "Семейный",
-          price: "2 200",
-          items: [{ text: "baz" }],
-          featured: true,
-        },
-      ],
-    });
-    const plans = await getPlans();
-    expect(plans).toHaveLength(2);
-    expect(plans[0].items).toHaveLength(2);
-    expect(plans[1].featured).toBe(true);
-  });
-
-  it("requests drafts + overrides access in draft mode", async () => {
-    draftModeMock.mockResolvedValue({ isEnabled: true });
-    findMock.mockResolvedValue({ docs: [] });
-    await getPlans();
-    expect(findMock).toHaveBeenCalledWith(
-      expect.objectContaining({ collection: "plans", draft: true, overrideAccess: true }),
-    );
-  });
-
-  it("rejects malformed docs (Zod — missing price)", async () => {
-    findMock.mockResolvedValue({
-      docs: [{ id: "p1", eyebrow: "base", name: "X", items: [] }],
-    });
-    await expect(getPlans()).rejects.toThrow();
-  });
-});
 
 describe("getTeamMembers", () => {
   beforeEach(() => {

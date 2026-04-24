@@ -1,9 +1,16 @@
+import { draftMode } from "next/headers";
+
+import { LivePreviewRefresh } from "@/components/LivePreviewRefresh";
 import { getGalleryPage, getGalleryPhotos } from "@/lib/payload/fetchers";
 
 import { GalleryView, type GalleryPhotoView } from "./GalleryView";
 
 export default async function GalleryPage() {
-  const [page, photos] = await Promise.all([getGalleryPage(), getGalleryPhotos()]);
+  const [{ isEnabled: isDraft }, page, photos] = await Promise.all([
+    draftMode(),
+    getGalleryPage(),
+    getGalleryPhotos(),
+  ]);
 
   const viewPhotos: GalleryPhotoView[] = photos.map((p) => ({
     id: p.id,
@@ -24,11 +31,14 @@ export default async function GalleryPage() {
   }));
 
   return (
-    <GalleryView
-      photos={viewPhotos}
-      hero={page.hero ?? {}}
-      telegramStrip={page.telegramStrip ?? {}}
-      instaTiles={instaTiles}
-    />
+    <>
+      {isDraft && <LivePreviewRefresh />}
+      <GalleryView
+        photos={viewPhotos}
+        hero={page.hero ?? {}}
+        telegramStrip={page.telegramStrip ?? {}}
+        instaTiles={instaTiles}
+      />
+    </>
   );
 }

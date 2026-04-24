@@ -1,23 +1,24 @@
+import { draftMode } from "next/headers";
 import Link from "next/link";
 
 import { CmsImage } from "@/components/CmsImage";
+import { LivePreviewRefresh } from "@/components/LivePreviewRefresh";
 import {
   getActivities,
   getFaqs,
   getHome,
   getLodges,
-  getPlans,
   getReviews,
   getShifts,
 } from "@/lib/payload/fetchers";
 
 export default async function HomePage() {
-  const [home, faqs, activities, shifts, plans, lodges, reviews] = await Promise.all([
+  const [{ isEnabled: isDraft }, home, faqs, activities, shifts, lodges, reviews] = await Promise.all([
+    draftMode(),
     getHome(),
     getFaqs(),
     getActivities(),
     getShifts(),
-    getPlans(),
     getLodges(),
     getReviews(),
   ]);
@@ -30,7 +31,6 @@ export default async function HomePage() {
   const activitiesHead = home.activitiesHead ?? {};
   const scheduleHead = home.scheduleHead ?? {};
   const galleryStrip = home.galleryStrip ?? { tiles: [] };
-  const pricingHead = home.pricingHead ?? {};
   const reviewsHead = home.reviewsHead ?? {};
   const faqHead = home.faqHead ?? {};
 
@@ -38,6 +38,7 @@ export default async function HomePage() {
 
   return (
     <>
+      {isDraft && <LivePreviewRefresh />}
       {/* HERO */}
       <section className="hero hero-v1" data-screen-label="01 Hero">
         <div className="hero-card">
@@ -371,40 +372,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* PRICING */}
-      <section className="pricing" id="pricing" data-screen-label="08 Цены">
-        <div className="pricing-inner">
-          <div className="pricing-head">
-            {pricingHead.eyebrow && <p className="eyebrow">{pricingHead.eyebrow}</p>}
-            <h2>
-              {pricingHead.titleLine1}
-              {pricingHead.titleLine2 && (
-                <>
-                  <br />
-                  {pricingHead.titleLine2}
-                </>
-              )}
-            </h2>
-            {pricingHead.body && <p>{pricingHead.body}</p>}
-          </div>
-          <div className="plans">
-            {plans.map((p) => (
-              <Plan
-                key={p.id}
-                eyebrow={p.eyebrow}
-                name={p.name}
-                price={p.price}
-                perUnit={p.perUnit ?? "р / человек"}
-                nights={p.nights ?? "за смену · 10 дней"}
-                items={p.items.map((i) => i.text)}
-                featured={p.featured ?? false}
-                btnClass={p.btnClass ?? undefined}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* REVIEWS */}
       <section className="reviews" data-screen-label="09 Отзывы">
         <div className="reviews-inner">
@@ -505,39 +472,6 @@ function Shift({ num, dates, theme, spotsTotal, left, soldOut }: ShiftProps) {
         <span>{spotsTotal} мест</span>
         {soldOut ? <span className="spots-sold">sold out</span> : <span className="spots-left">свободно {left}</span>}
       </div>
-    </div>
-  );
-}
-
-type PlanProps = {
-  eyebrow: string;
-  name: string;
-  price: string;
-  perUnit?: string;
-  nights?: string;
-  items: string[];
-  featured?: boolean;
-  btnClass?: string;
-};
-
-function Plan({ eyebrow, name, price, perUnit, nights, items, featured, btnClass }: PlanProps) {
-  return (
-    <div className={`plan ${featured ? "featured" : ""}`}>
-      {featured && <span className="plan-ribbon">★ любимый выбор</span>}
-      <div className="plan-eyebrow">{eyebrow}</div>
-      <h3 className="plan-name">{name}</h3>
-      <div className="plan-price">
-        {price} <span>{perUnit ?? "р / человек"}</span>
-      </div>
-      <div className="plan-nights">{nights ?? "за смену · 10 дней"}</div>
-      <ul className="plan-list">
-        {items.map((it) => (
-          <li key={it}>{it}</li>
-        ))}
-      </ul>
-      <Link href="/booking" className={`btn ${btnClass ?? ""}`} style={{ width: "100%" }}>
-        Выбрать пакет
-      </Link>
     </div>
   );
 }

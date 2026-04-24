@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import { Fragment } from "react";
 
 import { CmsImage } from "@/components/CmsImage";
+import { LivePreviewRefresh } from "@/components/LivePreviewRefresh";
 import { getAboutPage, getTeamMembers } from "@/lib/payload/fetchers";
 
 export const metadata: Metadata = {
@@ -9,7 +11,11 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const [about, team] = await Promise.all([getAboutPage(), getTeamMembers()]);
+  const [{ isEnabled: isDraft }, about, team] = await Promise.all([
+    draftMode(),
+    getAboutPage(),
+    getTeamMembers(),
+  ]);
 
   const hero = about.hero ?? {};
   const photoCard = about.photoCard ?? {};
@@ -19,6 +25,7 @@ export default async function AboutPage() {
 
   return (
     <>
+      {isDraft && <LivePreviewRefresh />}
       <section className="about-hero" data-screen-label="01 О нас — заголовок">
         {hero.eyebrow && <span className="eyebrow">{hero.eyebrow}</span>}
         <h1>

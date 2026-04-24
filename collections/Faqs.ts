@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 
+import { generatePreviewURL, livePreview } from "@/lib/payload/preview";
 import { revalidateOnPublish } from "@/lib/payload/revalidate-on-publish";
 
 export const Faqs: CollectionConfig = {
@@ -7,8 +8,8 @@ export const Faqs: CollectionConfig = {
   admin: {
     useAsTitle: "question",
     defaultColumns: ["question", "order", "_status"],
-    preview: () =>
-      `/api/preview?secret=${process.env.PREVIEW_SECRET ?? ""}&path=/%23faq`,
+    preview: generatePreviewURL("/#faq"),
+    livePreview: livePreview("/#faq"),
   },
   access: {
     read: ({ req: { user } }) => {
