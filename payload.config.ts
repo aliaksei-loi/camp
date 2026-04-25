@@ -15,6 +15,7 @@ import { Reviews } from "./collections/Reviews";
 import { Shifts } from "./collections/Shifts";
 import { TeamMembers } from "./collections/TeamMembers";
 import { AboutPage } from "./globals/AboutPage";
+import { BookingPage } from "./globals/BookingPage";
 import { Footer } from "./globals/Footer";
 import { GalleryPage } from "./globals/GalleryPage";
 import { Home } from "./globals/Home";
@@ -56,7 +57,7 @@ export default buildConfig({
     Reviews,
     GalleryPhotos,
   ],
-  globals: [Home, AboutPage, GalleryPage, Nav, Footer, SiteSettings, Schedule],
+  globals: [Home, AboutPage, BookingPage, GalleryPage, Nav, Footer, SiteSettings, Schedule],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

@@ -470,6 +470,28 @@ export const getGalleryPage = async (): Promise<GalleryPage> => {
   return GalleryPageSchema.parse(doc);
 };
 
+// ---------- Booking page global ----------
+
+const BookingPageSchema = z.object({
+  periodLabel: TextLike,
+  periodSub: TextLike,
+  heroIntro: TextLike,
+});
+
+export type BookingPage = z.infer<typeof BookingPageSchema>;
+
+export const getBookingPage = async (): Promise<BookingPage> => {
+  const { isEnabled: draft } = await draftMode();
+  const payload = await getPayload({ config });
+  const doc = await payload.findGlobal({
+    slug: "booking-page",
+    draft,
+    depth: 1,
+    overrideAccess: draft,
+  });
+  return BookingPageSchema.parse(doc);
+};
+
 // ---------- Nav global ----------
 
 const NavSchema = z.object({
