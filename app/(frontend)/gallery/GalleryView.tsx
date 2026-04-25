@@ -63,9 +63,14 @@ type Props = {
     ctaHref?: string | null;
   };
   instaTiles: InstaTileView[];
+  visibility?: {
+    hideHero?: boolean | null;
+    hideWall?: boolean | null;
+    hideInstaStrip?: boolean | null;
+  };
 };
 
-export function GalleryView({ photos, hero, telegramStrip, instaTiles }: Props) {
+export function GalleryView({ photos, hero, telegramStrip, instaTiles, visibility = {} }: Props) {
   const [filter, setFilter] = useState<Filter>("all");
   const [lbIdx, setLbIdx] = useState<number | null>(null);
 
@@ -111,6 +116,7 @@ export function GalleryView({ photos, hero, telegramStrip, instaTiles }: Props) 
 
   return (
     <>
+      {!visibility.hideHero && (
       <section className="g-hero" data-screen-label="01 Галерея заголовок">
         {hero.eyebrow && <span className="eyebrow">{hero.eyebrow}</span>}
         <h1>
@@ -141,6 +147,9 @@ export function GalleryView({ photos, hero, telegramStrip, instaTiles }: Props) 
         </div>
       </section>
 
+      )}
+
+      {!visibility.hideWall && (
       <div className="g-wall">
         {visible.map((p) => (
           <article
@@ -160,6 +169,9 @@ export function GalleryView({ photos, hero, telegramStrip, instaTiles }: Props) 
         ))}
       </div>
 
+      )}
+
+      {!visibility.hideInstaStrip && (
       <section className="insta-strip">
         {telegramStrip.eyebrow && (
           <span className="eyebrow" style={{ color: "var(--c-cream)", opacity: 0.9 }}>
@@ -184,6 +196,7 @@ export function GalleryView({ photos, hero, telegramStrip, instaTiles }: Props) 
           })}
         </div>
       </section>
+      )}
 
       <div className={`lightbox ${lbItem ? "on" : ""}`} onClick={(e) => e.target === e.currentTarget && closeLb()}>
         <button className="lb-close" type="button" onClick={closeLb} aria-label="Закрыть">

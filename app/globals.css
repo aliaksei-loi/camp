@@ -364,22 +364,24 @@ section.belt {
     position: relative;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    min-height: 560px;
     display: grid;
     grid-template-columns: 1fr;
+    align-items: center;
     gap: 0;
     border: 2px solid var(--c-rust);
 }
 .hero-photo {
-    background-color: #c8b59a;
     position: relative;
     overflow: hidden;
-    min-height: 240px;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    background: var(--c-cream);
 }
 .hero-photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
 }
 .hero-right {
     padding: 28px 22px;
@@ -587,7 +589,7 @@ section.belt {
     line-height: 1.05;
 }
 .card-text {
-    font-size: 14.5px;
+    font-size: 16px;
     color: var(--c-ink-2);
     line-height: 1.55;
     margin-bottom: 20px;
@@ -668,7 +670,7 @@ section.belt {
     line-height: 1;
 }
 .lodge-meta {
-    font-size: 13px;
+    font-size: 15px;
     color: var(--c-ink-2);
     margin-bottom: 14px;
 }
@@ -755,7 +757,8 @@ section.belt {
     margin-bottom: 6px;
 }
 .act-desc {
-    font-size: 13px;
+    font-size: 15px;
+    line-height: 1.45;
     color: var(--c-ink-2);
 }
 
@@ -823,7 +826,7 @@ section.belt {
     line-height: 1.05;
 }
 .shift-theme {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--c-ink);
     margin-bottom: 10px;
@@ -831,7 +834,7 @@ section.belt {
     text-transform: uppercase;
 }
 .shift-spots {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--c-ink-2);
     display: flex;
     justify-content: space-between;
@@ -959,7 +962,7 @@ section.belt {
     margin-bottom: 10px;
 }
 .review-text {
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.55;
     color: var(--c-ink);
     margin-bottom: 14px;
@@ -968,7 +971,7 @@ section.belt {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--c-ink-2);
 }
 .review-avatar {
@@ -1052,7 +1055,8 @@ section.belt {
 .faq-body {
     padding-top: 12px;
     color: var(--c-ink-2);
-    font-size: 15px;
+    font-size: 17px;
+    line-height: 1.55;
 }
 
 /* CTA strip */
@@ -1098,7 +1102,7 @@ section.belt {
     margin-bottom: 12px;
 }
 .footer h4 {
-    font-size: 12px;
+    font-size: 13px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--c-lemon);
@@ -1109,7 +1113,7 @@ section.belt {
     list-style: none;
     padding: 0;
     margin: 0;
-    font-size: 14px;
+    font-size: 15px;
 }
 .footer ul li {
     margin-bottom: 10px;
@@ -2596,12 +2600,6 @@ div[data-ph] {
     .hero {
         padding: 28px 24px 0;
     }
-    .hero-card {
-        grid-template-columns: 1fr 1fr;
-    }
-    .hero-photo {
-        min-height: 0;
-    }
     .hero-right {
         padding: 48px 44px;
     }
@@ -2612,7 +2610,8 @@ div[data-ph] {
     .sticker {
         width: 110px;
         height: 110px;
-        font-size: 14px;
+        font-size: 17px;
+        line-height: 1.1;
     }
     .hero-ctas .btn {
         width: auto;
@@ -2780,6 +2779,60 @@ div[data-ph] {
     }
 }
 
+/* Desktop hero: text overlaid on the photo with a soft gradient scrim */
+@media (min-width: 1024px) {
+    .hero-card {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        align-items: stretch;
+        min-height: clamp(520px, 62vh, 720px);
+    }
+    .hero-v1 .hero-photo {
+        grid-column: 1;
+        grid-row: 1;
+        aspect-ratio: auto;
+        height: 100%;
+        width: 100%;
+    }
+    .hero-v1 .hero-photo::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            100deg,
+            rgba(20, 12, 6, 0.62) 0%,
+            rgba(20, 12, 6, 0.42) 28%,
+            rgba(20, 12, 6, 0.1) 58%,
+            rgba(20, 12, 6, 0) 80%
+        );
+        pointer-events: none;
+        z-index: 1;
+    }
+    .hero-v1 .hero-right {
+        grid-column: 1;
+        grid-row: 1;
+        z-index: 2;
+        align-self: center;
+        padding: 64px 64px 64px 7vw;
+        max-width: min(620px, 56%);
+    }
+    .hero-v1 .hero-tag {
+        color: var(--c-cream);
+    }
+    .hero-v1 .hero-title {
+        color: var(--c-cream);
+        text-shadow: 0 2px 22px rgba(0, 0, 0, 0.4);
+    }
+    .hero-v1 .hero-desc {
+        color: rgba(255, 251, 239, 0.92);
+    }
+    .hero-v1 .btn.ghost {
+        color: var(--c-cream);
+        border-color: var(--c-cream);
+        box-shadow: 3px 3px 0 var(--c-cream);
+    }
+}
+
 /* Unwind decorative card rotation on phones (was causing overflow) */
 @media (max-width: 599.98px) {
     .review,
@@ -2797,7 +2850,133 @@ div[data-ph] {
     }
 }
 
+/* ===== Liveliness pass ===== */
+
+/* Sticker gently bobs to feel hand-drawn */
+@keyframes sticker-bob {
+    0%, 100% { transform: rotate(-8deg) translateY(0); }
+    50%      { transform: rotate(-5deg) translateY(-6px); }
+}
+.hero-sticker .sticker {
+    animation: sticker-bob 4.5s ease-in-out infinite;
+    will-change: transform;
+}
+
+/* Hover lifts on content cards */
+.card,
+.lodge,
+.shift,
+.review,
+.faq-item {
+    transition:
+        transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+        box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.card:hover {
+    transform: translateY(-5px) rotate(-0.4deg);
+    box-shadow: 0 20px 38px -22px rgba(40, 20, 10, 0.3);
+}
+.lodge:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 42px -24px rgba(40, 20, 10, 0.35);
+}
+.shift:hover {
+    transform: translateY(-4px) rotate(0.3deg);
+    box-shadow: 0 18px 32px -22px rgba(40, 20, 10, 0.3);
+}
+.review:hover {
+    transform: translateY(-4px) rotate(-0.2deg);
+    box-shadow: 0 18px 32px -22px rgba(40, 20, 10, 0.3);
+}
+.faq-item:hover {
+    transform: translateX(3px);
+}
+
+/* Subtle CTA button press */
+.btn {
+    will-change: transform;
+}
+.btn:active {
+    transform: translateY(1px) scale(0.985);
+}
+
+/* Scroll-driven reveal — zero-JS, uses `translate` so hover transforms stay free */
+@supports (animation-timeline: view()) {
+    @keyframes reveal-up {
+        from { opacity: 0; translate: 0 28px; }
+        to   { opacity: 1; translate: 0 0; }
+    }
+    @keyframes reveal-fade {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+
+    .card,
+    .lodge,
+    .shift,
+    .review,
+    .faq-item,
+    .act,
+    .gallery-grid > div,
+    .insta-grid > div,
+    .g-item {
+        animation: reveal-up linear both;
+        animation-timeline: view();
+        animation-range: entry 5% cover 25%;
+    }
+
+    .intro-head,
+    .accom-head,
+    .activities-head,
+    .schedule-head,
+    .gallery-head,
+    .reviews-head,
+    .faq-head {
+        animation: reveal-fade linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 20%;
+    }
+}
+
 /* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .marquee-track,
+    .hero-sticker .sticker {
+        animation: none;
+    }
+    .card:hover,
+    .lodge:hover,
+    .shift:hover,
+    .review:hover,
+    .faq-item:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    @supports (animation-timeline: view()) {
+        .card,
+        .lodge,
+        .shift,
+        .review,
+        .faq-item,
+        .act,
+        .gallery-grid > div,
+        .insta-grid > div,
+        .g-item,
+        .intro-head,
+        .accom-head,
+        .activities-head,
+        .schedule-head,
+        .gallery-head,
+        .reviews-head,
+        .faq-head {
+            animation: none;
+            opacity: 1;
+            translate: 0 0;
+        }
+    }
+}
+
+/* Reduced motion (existing rules) */
 @media (prefers-reduced-motion: reduce) {
     .marquee-track {
         animation: none;

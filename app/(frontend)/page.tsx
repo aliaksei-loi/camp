@@ -33,6 +33,7 @@ export default async function HomePage() {
   const galleryStrip = home.galleryStrip ?? { tiles: [] };
   const reviewsHead = home.reviewsHead ?? {};
   const faqHead = home.faqHead ?? {};
+  const vis = home.sectionVisibility ?? {};
 
   const heroImage = typeof hero.image === "object" ? hero.image : null;
 
@@ -42,12 +43,11 @@ export default async function HomePage() {
       {/* HERO */}
       <section className="hero hero-v1" data-screen-label="01 Hero">
         <div className="hero-card">
-          <div className="hero-photo stripes">
+          <div className="hero-photo">
             <CmsImage
               media={heroImage}
               fill
               sizes="800px"
-              style={{ mixBlendMode: "multiply", opacity: 0.82 }}
               fallback={
                 <div
                   data-ph="tent"
@@ -55,10 +55,9 @@ export default async function HomePage() {
                   style={{
                     position: "absolute",
                     inset: 0,
-                    backgroundSize: "cover",
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
-                    mixBlendMode: "multiply",
-                    opacity: 0.82,
                   }}
                 />
               }
@@ -118,6 +117,7 @@ export default async function HomePage() {
       </section>
 
       {/* INTRO */}
+      {!vis.hideIntro && (
       <section className="intro belt" data-screen-label="02 Intro">
         <div className="container">
           {intro.eyebrow && <p className="eyebrow">{intro.eyebrow}</p>}
@@ -190,7 +190,10 @@ export default async function HomePage() {
         </div>
       </section>
 
+      )}
+
       {/* THREE PILLARS */}
+      {!vis.hidePillars && (
       <section className="band" style={{ background: "var(--c-lemon)" }} data-screen-label="03 Три столпа">
         {pillarsBand.title && <p className="band-title">{pillarsBand.title}</p>}
         <div className="cards-grid">
@@ -226,7 +229,10 @@ export default async function HomePage() {
         </div>
       </section>
 
+      )}
+
       {/* ACCOMMODATIONS */}
+      {!vis.hideAccom && (
       <section className="accom" id="accom" data-screen-label="04 Размещение">
         <div className="accom-inner">
           <div className="accom-head">
@@ -276,7 +282,10 @@ export default async function HomePage() {
         </div>
       </section>
 
+      )}
+
       {/* ACTIVITIES */}
+      {!vis.hideActivities && (
       <section className="activities" id="activities" data-screen-label="05 Активности">
         <div className="activities-inner">
           <div className="activities-head">
@@ -299,7 +308,10 @@ export default async function HomePage() {
         </div>
       </section>
 
+      )}
+
       {/* SCHEDULE */}
+      {!vis.hideSchedule && (
       <section className="schedule" id="schedule" data-screen-label="06 Смены">
         <div className="schedule-inner">
           <div className="schedule-head">
@@ -337,7 +349,10 @@ export default async function HomePage() {
         </div>
       </section>
 
+      )}
+
       {/* GALLERY STRIP */}
+      {!vis.hideGallery && (
       <section className="gallery" id="gallery" data-screen-label="07 Галерея">
         <div className="gallery-inner">
           <div className="gallery-head">
@@ -372,7 +387,10 @@ export default async function HomePage() {
         </div>
       </section>
 
+      )}
+
       {/* REVIEWS */}
+      {!vis.hideReviews && (
       <section className="reviews" data-screen-label="09 Отзывы">
         <div className="reviews-inner">
           <div className="reviews-head">
@@ -411,7 +429,10 @@ export default async function HomePage() {
         </div>
       </section>
 
+      )}
+
       {/* FAQ */}
+      {!vis.hideFaq && (
       <section className="faq" id="faq" data-screen-label="10 FAQ">
         <div className="faq-inner">
           <div className="faq-head">
@@ -433,6 +454,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      )}
     </>
   );
 }

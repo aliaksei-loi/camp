@@ -16,6 +16,27 @@ export const AboutPage: GlobalConfig = {
   },
   fields: [
     {
+      name: "hidePage",
+      type: "checkbox",
+      label: "Скрыть страницу целиком (404)",
+      defaultValue: false,
+      admin: { description: "Если включено — страница возвращает 404. Content preserved." },
+    },
+    {
+      name: "sectionVisibility",
+      type: "group",
+      admin: { description: "Hide sections without deleting their content" },
+      fields: [
+        { name: "hideHero", type: "checkbox", label: "Скрыть: Заголовок", defaultValue: false },
+        { name: "hidePhotoCard", type: "checkbox", label: "Скрыть: Фото-карточка", defaultValue: false },
+        { name: "hideStory", type: "checkbox", label: "Скрыть: История", defaultValue: false },
+        { name: "hideValues", type: "checkbox", label: "Скрыть: Принципы", defaultValue: false },
+        { name: "hideTeam", type: "checkbox", label: "Скрыть: Команда", defaultValue: false },
+        { name: "hideNumbers", type: "checkbox", label: "Скрыть: Цифры", defaultValue: false },
+        { name: "hideManifesto", type: "checkbox", label: "Скрыть: Манифест", defaultValue: false },
+      ],
+    },
+    {
       name: "hero",
       type: "group",
       fields: [

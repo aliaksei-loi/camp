@@ -188,6 +188,18 @@ export const getReviews = async (): Promise<Review[]> => {
 const TextLike = z.string().nullish();
 
 const HomeSchema = z.object({
+  sectionVisibility: z
+    .object({
+      hideIntro: z.boolean().nullish(),
+      hidePillars: z.boolean().nullish(),
+      hideAccom: z.boolean().nullish(),
+      hideActivities: z.boolean().nullish(),
+      hideSchedule: z.boolean().nullish(),
+      hideGallery: z.boolean().nullish(),
+      hideReviews: z.boolean().nullish(),
+      hideFaq: z.boolean().nullish(),
+    })
+    .nullish(),
   hero: z
     .object({
       tag: TextLike,
@@ -305,6 +317,18 @@ export const getHome = async (): Promise<Home> => {
 // ---------- About page global ----------
 
 const AboutPageSchema = z.object({
+  hidePage: z.boolean().nullish(),
+  sectionVisibility: z
+    .object({
+      hideHero: z.boolean().nullish(),
+      hidePhotoCard: z.boolean().nullish(),
+      hideStory: z.boolean().nullish(),
+      hideValues: z.boolean().nullish(),
+      hideTeam: z.boolean().nullish(),
+      hideNumbers: z.boolean().nullish(),
+      hideManifesto: z.boolean().nullish(),
+    })
+    .nullish(),
   hero: z
     .object({
       eyebrow: TextLike,
@@ -410,6 +434,14 @@ export const getGalleryPhotos = async (): Promise<GalleryPhoto[]> => {
 // ---------- Gallery page global ----------
 
 const GalleryPageSchema = z.object({
+  hidePage: z.boolean().nullish(),
+  sectionVisibility: z
+    .object({
+      hideHero: z.boolean().nullish(),
+      hideWall: z.boolean().nullish(),
+      hideInstaStrip: z.boolean().nullish(),
+    })
+    .nullish(),
   hero: z
     .object({ eyebrow: TextLike, titleLine1: TextLike, titleLine2: TextLike, sub: TextLike })
     .nullish(),

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { draftMode } from "next/headers";
+import { notFound } from "next/navigation";
 import { Fragment } from "react";
 
 import { CmsImage } from "@/components/CmsImage";
@@ -17,15 +18,19 @@ export default async function AboutPage() {
     getTeamMembers(),
   ]);
 
+  if (about.hidePage) notFound();
+
   const hero = about.hero ?? {};
   const photoCard = about.photoCard ?? {};
   const valuesHead = about.valuesHead ?? {};
   const teamHead = about.teamHead ?? {};
   const photoCardImage = typeof photoCard.image === "object" ? photoCard.image : null;
+  const vis = about.sectionVisibility ?? {};
 
   return (
     <>
       {isDraft && <LivePreviewRefresh />}
+      {!vis.hideHero && (
       <section className="about-hero" data-screen-label="01 О нас — заголовок">
         {hero.eyebrow && <span className="eyebrow">{hero.eyebrow}</span>}
         <h1>
@@ -38,7 +43,9 @@ export default async function AboutPage() {
         </h1>
         {hero.sub && <p>{hero.sub}</p>}
       </section>
+      )}
 
+      {!vis.hidePhotoCard && (
       <div className="about-photo">
         <div className="about-photo-card" data-ph="lake" data-seed="70">
           <CmsImage media={photoCardImage} fill sizes="800px" />
@@ -46,7 +53,9 @@ export default async function AboutPage() {
           {photoCard.caption && <div className="caption-sticker">{photoCard.caption}</div>}
         </div>
       </div>
+      )}
 
+      {!vis.hideStory && (
       <section className="story" data-screen-label="02 История">
         {about.storySections.map((s) => (
           <Fragment key={s.id ?? s.heading}>
@@ -56,7 +65,9 @@ export default async function AboutPage() {
           </Fragment>
         ))}
       </section>
+      )}
 
+      {!vis.hideValues && (
       <section className="values" data-screen-label="03 Принципы">
         <div className="values-inner">
           <div className="values-head">
@@ -77,6 +88,9 @@ export default async function AboutPage() {
         </div>
       </section>
 
+      )}
+
+      {!vis.hideTeam && (
       <section className="team-band" data-screen-label="04 Команда">
         <div className="team-inner">
           <div className="team-head">
@@ -103,6 +117,9 @@ export default async function AboutPage() {
         </div>
       </section>
 
+      )}
+
+      {!vis.hideNumbers && (
       <section className="numbers" data-screen-label="05 Цифры">
         <div className="numbers-inner">
           {about.numbers.map((n) => (
@@ -114,6 +131,9 @@ export default async function AboutPage() {
         </div>
       </section>
 
+      )}
+
+      {!vis.hideManifesto && (
       <section className="manifesto" data-screen-label="06 Манифест">
         <div className="manifesto-inner">
           {about.manifesto.map((seg, i) =>
@@ -125,6 +145,7 @@ export default async function AboutPage() {
           )}
         </div>
       </section>
+      )}
     </>
   );
 }
