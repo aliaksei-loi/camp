@@ -267,15 +267,6 @@ const HomeSchema = z.object({
   activitiesHead: z
     .object({ eyebrow: TextLike, titleLine1: TextLike, titleLine2: TextLike })
     .nullish(),
-  scheduleHead: z
-    .object({
-      eyebrow: TextLike,
-      titleLine1: TextLike,
-      titleLine2: TextLike,
-      ctaLabel: TextLike,
-      ctaHref: TextLike,
-    })
-    .nullish(),
   galleryStrip: z
     .object({
       eyebrow: TextLike,
@@ -583,4 +574,51 @@ export const getSiteSettings = async (): Promise<SiteSettings> => {
   const payload = await getPayload({ config });
   const doc = await payload.findGlobal({ slug: "site-settings", depth: 1 });
   return SiteSettingsSchema.parse(doc);
+};
+
+// ---------- Schedule global ----------
+
+const ScheduleItemSchema = z.object({
+  id: z.string().nullish(),
+  time: TextLike,
+  title: z.string(),
+  description: TextLike,
+});
+
+export type ScheduleItem = z.infer<typeof ScheduleItemSchema>;
+
+const ScheduleDaySchema = z.object({
+  id: z.string().nullish(),
+  dateLabel: z.string(),
+  theme: TextLike,
+  kidsItems: z.array(ScheduleItemSchema).default([]),
+  olderItems: z.array(ScheduleItemSchema).default([]),
+});
+
+export type ScheduleDay = z.infer<typeof ScheduleDaySchema>;
+
+const ScheduleSchema = z.object({
+  eyebrow: TextLike,
+  titleLine1: TextLike,
+  titleLine2: TextLike,
+  periodLabel: TextLike,
+  ctaLabel: TextLike,
+  ctaHref: TextLike,
+  trackKidsLabel: TextLike,
+  trackOlderLabel: TextLike,
+  days: z.array(ScheduleDaySchema).default([]),
+});
+
+export type Schedule = z.infer<typeof ScheduleSchema>;
+
+export const getSchedule = async (): Promise<Schedule> => {
+  const { isEnabled: draft } = await draftMode();
+  const payload = await getPayload({ config });
+  const doc = await payload.findGlobal({
+    slug: "schedule",
+    draft,
+    depth: 1,
+    overrideAccess: draft,
+  });
+  return ScheduleSchema.parse(doc);
 };

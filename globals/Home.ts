@@ -29,7 +29,7 @@ export const Home: GlobalConfig = {
         { name: "hidePillars", type: "checkbox", label: "Скрыть: Три столпа", defaultValue: false },
         { name: "hideAccom", type: "checkbox", label: "Скрыть: Размещение", defaultValue: false },
         { name: "hideActivities", type: "checkbox", label: "Скрыть: Активности", defaultValue: false },
-        { name: "hideSchedule", type: "checkbox", label: "Скрыть: Смены", defaultValue: false },
+        { name: "hideSchedule", type: "checkbox", label: "Скрыть: Расписание", defaultValue: false },
         { name: "hideGallery", type: "checkbox", label: "Скрыть: Галерея-полоса", defaultValue: false },
         { name: "hideReviews", type: "checkbox", label: "Скрыть: Отзывы", defaultValue: false },
         { name: "hideFaq", type: "checkbox", label: "Скрыть: FAQ", defaultValue: false },
@@ -117,17 +117,6 @@ export const Home: GlobalConfig = {
         { name: "eyebrow", type: "text" },
         { name: "titleLine1", type: "text" },
         { name: "titleLine2", type: "text" },
-      ],
-    },
-    {
-      name: "scheduleHead",
-      type: "group",
-      fields: [
-        { name: "eyebrow", type: "text" },
-        { name: "titleLine1", type: "text" },
-        { name: "titleLine2", type: "text" },
-        { name: "ctaLabel", type: "text" },
-        { name: "ctaHref", type: "text" },
       ],
     },
     {
