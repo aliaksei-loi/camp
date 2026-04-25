@@ -64,12 +64,17 @@ export function ScheduleAccordion({ days, trackKidsLabel, trackOlderLabel }: Pro
             <div id={bodyId} className="schedule-day-body">
               <div className="schedule-track">
                 {items.map((item, iIdx) => (
-                  <div key={item.id ?? iIdx} className="schedule-item">
+                  <div
+                    key={item.id ?? iIdx}
+                    className={`schedule-item${item.time ? "" : " no-time"}`}
+                  >
                     {item.time && <span className="schedule-item-time">{item.time}</span>}
-                    <span className="schedule-item-title">{item.title}</span>
-                    {item.description && (
-                      <span className="schedule-item-desc">{item.description}</span>
-                    )}
+                    <div className="schedule-item-text">
+                      <span className="schedule-item-title">{item.title}</span>
+                      {item.description && (
+                        <span className="schedule-item-desc">{item.description}</span>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
