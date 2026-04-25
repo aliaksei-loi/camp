@@ -19,6 +19,7 @@ import { Footer } from "./globals/Footer";
 import { GalleryPage } from "./globals/GalleryPage";
 import { Home } from "./globals/Home";
 import { Nav } from "./globals/Nav";
+import { Schedule } from "./globals/Schedule";
 import { SiteSettings } from "./globals/SiteSettings";
 
 const filename = fileURLToPath(import.meta.url);
@@ -55,7 +56,7 @@ export default buildConfig({
     Reviews,
     GalleryPhotos,
   ],
-  globals: [Home, AboutPage, GalleryPage, Nav, Footer, SiteSettings],
+  globals: [Home, AboutPage, GalleryPage, Nav, Footer, SiteSettings, Schedule],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

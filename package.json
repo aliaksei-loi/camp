@@ -19,6 +19,7 @@
     "seed:lodges": "tsx --env-file=.env.local scripts/seed-lodges.ts",
     "seed:reviews": "tsx --env-file=.env.local scripts/seed-reviews.ts",
     "seed:home": "tsx --env-file=.env.local scripts/seed-home.ts",
+    "seed:schedule": "tsx --env-file=.env.local scripts/seed-schedule.ts",
     "seed:about": "tsx --env-file=.env.local scripts/seed-about.ts",
     "seed:gallery": "tsx --env-file=.env.local scripts/seed-gallery.ts",
     "seed:chrome": "tsx --env-file=.env.local scripts/seed-chrome.ts",

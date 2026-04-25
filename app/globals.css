@@ -851,6 +851,135 @@ section.belt {
     opacity: 0.6;
 }
 
+/* Schedule head right column */
+.schedule-head-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+.schedule-period {
+    font-size: 15px;
+    color: var(--c-cream);
+    margin: 0;
+}
+
+/* Schedule accordion */
+/* Critical pre-hydration rule: closed bodies must be hidden before JS runs */
+.schedule-day:not(.is-open) .schedule-day-body {
+    display: none;
+}
+.schedule-acc {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 2px solid var(--c-rust);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+.schedule-day {
+    border-bottom: 1.5px solid rgba(185, 74, 42, 0.35);
+}
+.schedule-day:last-child {
+    border-bottom: none;
+}
+.schedule-day.is-open {
+    background: var(--c-paper);
+}
+.schedule-day-head {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--c-cream);
+    transition: background 0.15s;
+}
+.schedule-day.is-open .schedule-day-head {
+    color: var(--c-rust);
+    background: var(--c-paper);
+}
+.schedule-day-label {
+    font-family: var(--font-display);
+    font-size: 20px;
+    flex: 1;
+}
+.schedule-day-theme {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    flex-shrink: 0;
+}
+.schedule-day-chevron {
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+.schedule-day-body {
+    padding: 0 20px 20px;
+}
+.schedule-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.schedule-tab {
+    padding: 6px 16px;
+    border: 2px solid var(--c-rust);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--c-rust);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+}
+.schedule-tab.is-active {
+    background: var(--c-rust);
+    color: var(--c-cream);
+}
+.schedule-track {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.schedule-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(185, 74, 42, 0.2);
+}
+.schedule-item:last-child {
+    border-bottom: none;
+}
+.schedule-item-time {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-rust);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+.schedule-item-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--c-ink);
+}
+.schedule-item-desc {
+    font-size: 13px;
+    color: var(--c-ink-2);
+    line-height: 1.4;
+}
+
 /* Gallery strip on home */
 .gallery {
     background: var(--c-cream);
@@ -2938,6 +3067,8 @@ div[data-ph] {
     }
 }
 
+/* Schedule accordion — no hover-lift and no reveal-up (plan: noisy stagger down a column) */
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
     .marquee-track,
@@ -2951,6 +3082,12 @@ div[data-ph] {
     .faq-item:hover {
         transform: none;
         box-shadow: none;
+    }
+    .schedule-day-head {
+        transition: none;
+    }
+    .schedule-tab {
+        transition: none;
     }
     @supports (animation-timeline: view()) {
         .card,
@@ -2968,7 +3105,11 @@ div[data-ph] {
         .schedule-head,
         .gallery-head,
         .reviews-head,
-        .faq-head {
+        .faq-head,
+        .schedule-day,
+        .schedule-day-head,
+        .schedule-day-body,
+        .schedule-item {
             animation: none;
             opacity: 1;
             translate: 0 0;

@@ -3,19 +3,22 @@ import Link from "next/link";
 
 import { CmsImage } from "@/components/CmsImage";
 import { LivePreviewRefresh } from "@/components/LivePreviewRefresh";
+import { ScheduleAccordion } from "@/components/ScheduleAccordion";
 import {
   getActivities,
   getFaqs,
   getHome,
   getLodges,
   getReviews,
+  getSchedule,
   getShifts,
 } from "@/lib/payload/fetchers";
 
 export default async function HomePage() {
-  const [{ isEnabled: isDraft }, home, faqs, activities, shifts, lodges, reviews] = await Promise.all([
+  const [{ isEnabled: isDraft }, home, schedule, faqs, activities, shifts, lodges, reviews] = await Promise.all([
     draftMode(),
     getHome(),
+    getSchedule(),
     getFaqs(),
     getActivities(),
     getShifts(),
@@ -29,7 +32,6 @@ export default async function HomePage() {
   const pillarsBand = home.pillarsBand ?? { pillars: [] };
   const accomHead = home.accomHead ?? {};
   const activitiesHead = home.activitiesHead ?? {};
-  const scheduleHead = home.scheduleHead ?? {};
   const galleryStrip = home.galleryStrip ?? { tiles: [] };
   const reviewsHead = home.reviewsHead ?? {};
   const faqHead = home.faqHead ?? {};
@@ -312,40 +314,37 @@ export default async function HomePage() {
 
       {/* SCHEDULE */}
       {!vis.hideSchedule && (
-      <section className="schedule" id="schedule" data-screen-label="06 Смены">
+      <section className="schedule" id="schedule" data-screen-label="06 Расписание">
         <div className="schedule-inner">
           <div className="schedule-head">
             <div>
-              {scheduleHead.eyebrow && <p className="eyebrow">{scheduleHead.eyebrow}</p>}
+              {schedule.eyebrow && <p className="eyebrow">{schedule.eyebrow}</p>}
               <h2>
-                {scheduleHead.titleLine1}
-                {scheduleHead.titleLine2 && (
+                {schedule.titleLine1}
+                {schedule.titleLine2 && (
                   <>
                     <br />
-                    {scheduleHead.titleLine2}
+                    {schedule.titleLine2}
                   </>
                 )}
               </h2>
             </div>
-            {scheduleHead.ctaLabel && scheduleHead.ctaHref && (
-              <Link href={scheduleHead.ctaHref} className="btn cream">
-                {scheduleHead.ctaLabel}
-              </Link>
-            )}
+            <div className="schedule-head-right">
+              {schedule.periodLabel && (
+                <p className="schedule-period">{schedule.periodLabel}</p>
+              )}
+              {schedule.ctaLabel && schedule.ctaHref && (
+                <Link href={schedule.ctaHref} className="btn cream">
+                  {schedule.ctaLabel}
+                </Link>
+              )}
+            </div>
           </div>
-          <div className="shifts">
-            {shifts.map((s) => (
-              <Shift
-                key={s.id}
-                num={s.num}
-                dates={[s.datesLine1, s.datesLine2]}
-                theme={s.theme}
-                spotsTotal={s.spotsTotal ?? 42}
-                left={s.spotsLeft ?? 0}
-                soldOut={s.soldOut ?? false}
-              />
-            ))}
-          </div>
+          <ScheduleAccordion
+            days={schedule.days ?? []}
+            trackKidsLabel={schedule.trackKidsLabel ?? "Малыши"}
+            trackOlderLabel={schedule.trackOlderLabel ?? "Старшие"}
+          />
         </div>
       </section>
 
