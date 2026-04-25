@@ -21,6 +21,21 @@ export const Home: GlobalConfig = {
   },
   fields: [
     {
+      name: "sectionVisibility",
+      type: "group",
+      admin: { description: "Hide sections without deleting their content" },
+      fields: [
+        { name: "hideIntro", type: "checkbox", label: "Скрыть: Интро + квиз-бокс", defaultValue: false },
+        { name: "hidePillars", type: "checkbox", label: "Скрыть: Три столпа", defaultValue: false },
+        { name: "hideAccom", type: "checkbox", label: "Скрыть: Размещение", defaultValue: false },
+        { name: "hideActivities", type: "checkbox", label: "Скрыть: Активности", defaultValue: false },
+        { name: "hideSchedule", type: "checkbox", label: "Скрыть: Смены", defaultValue: false },
+        { name: "hideGallery", type: "checkbox", label: "Скрыть: Галерея-полоса", defaultValue: false },
+        { name: "hideReviews", type: "checkbox", label: "Скрыть: Отзывы", defaultValue: false },
+        { name: "hideFaq", type: "checkbox", label: "Скрыть: FAQ", defaultValue: false },
+      ],
+    },
+    {
       name: "hero",
       type: "group",
       fields: [

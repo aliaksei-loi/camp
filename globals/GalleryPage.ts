@@ -16,6 +16,23 @@ export const GalleryPage: GlobalConfig = {
   },
   fields: [
     {
+      name: "hidePage",
+      type: "checkbox",
+      label: "Скрыть страницу целиком (404)",
+      defaultValue: false,
+      admin: { description: "Если включено — страница возвращает 404. Content preserved." },
+    },
+    {
+      name: "sectionVisibility",
+      type: "group",
+      admin: { description: "Hide sections without deleting their content" },
+      fields: [
+        { name: "hideHero", type: "checkbox", label: "Скрыть: Заголовок + фильтры", defaultValue: false },
+        { name: "hideWall", type: "checkbox", label: "Скрыть: Сетка фотографий", defaultValue: false },
+        { name: "hideInstaStrip", type: "checkbox", label: "Скрыть: Telegram / Instagram полоса", defaultValue: false },
+      ],
+    },
+    {
       name: "hero",
       type: "group",
       fields: [

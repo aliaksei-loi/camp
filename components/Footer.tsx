@@ -52,7 +52,7 @@ export function Footer({
           <div>
             <div className="footer-brand">{brand?.name ?? "belcreation"}</div>
             {brand?.description && (
-              <p style={{ maxWidth: 360, opacity: 0.8, fontSize: 14 }}>{brand.description}</p>
+              <p style={{ maxWidth: 360, opacity: 0.8, fontSize: 15, lineHeight: 1.5 }}>{brand.description}</p>
             )}
           </div>
           {navColumn && (navColumn.heading || navColumn.links.length > 0) && (

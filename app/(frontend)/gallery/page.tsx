@@ -1,4 +1,5 @@
 import { draftMode } from "next/headers";
+import { notFound } from "next/navigation";
 
 import { LivePreviewRefresh } from "@/components/LivePreviewRefresh";
 import { getGalleryPage, getGalleryPhotos } from "@/lib/payload/fetchers";
@@ -11,6 +12,8 @@ export default async function GalleryPage() {
     getGalleryPage(),
     getGalleryPhotos(),
   ]);
+
+  if (page.hidePage) notFound();
 
   const viewPhotos: GalleryPhotoView[] = photos.map((p) => ({
     id: p.id,
@@ -38,6 +41,7 @@ export default async function GalleryPage() {
         hero={page.hero ?? {}}
         telegramStrip={page.telegramStrip ?? {}}
         instaTiles={instaTiles}
+        visibility={page.sectionVisibility ?? {}}
       />
     </>
   );
