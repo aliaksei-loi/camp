@@ -12,7 +12,6 @@ import { Faqs } from "./collections/Faqs";
 import { GalleryPhotos } from "./collections/GalleryPhotos";
 import { Lodges } from "./collections/Lodges";
 import { Reviews } from "./collections/Reviews";
-import { Shifts } from "./collections/Shifts";
 import { TeamMembers } from "./collections/TeamMembers";
 import { AboutPage } from "./globals/AboutPage";
 import { BookingPage } from "./globals/BookingPage";
@@ -51,7 +50,6 @@ export default buildConfig({
     },
     Faqs,
     Activities,
-    Shifts,
     TeamMembers,
     Lodges,
     Reviews,

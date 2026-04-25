@@ -55,37 +55,6 @@ export const getActivities = async (): Promise<Activity[]> => {
   return ActivitiesSchema.parse(docs);
 };
 
-// ---------- Shifts ----------
-
-const ShiftSchema = z.object({
-  id: z.string(),
-  num: z.number(),
-  datesLine1: z.string(),
-  datesLine2: z.string(),
-  theme: z.string(),
-  spotsTotal: z.number().nullish(),
-  spotsLeft: z.number().nullish(),
-  soldOut: z.boolean().nullish(),
-  order: z.number().nullish(),
-});
-
-export type Shift = z.infer<typeof ShiftSchema>;
-
-const ShiftsSchema = z.array(ShiftSchema);
-
-export const getShifts = async (): Promise<Shift[]> => {
-  const { isEnabled: draft } = await draftMode();
-  const payload = await getPayload({ config });
-  const { docs } = await payload.find({
-    collection: "shifts",
-    draft,
-    sort: "order",
-    limit: 100,
-    overrideAccess: draft,
-  });
-  return ShiftsSchema.parse(docs);
-};
-
 // ---------- Team members ----------
 
 const MediaRefSchema = z

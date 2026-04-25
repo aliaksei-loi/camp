@@ -11,17 +11,15 @@ import {
   getLodges,
   getReviews,
   getSchedule,
-  getShifts,
 } from "@/lib/payload/fetchers";
 
 export default async function HomePage() {
-  const [{ isEnabled: isDraft }, home, schedule, faqs, activities, shifts, lodges, reviews] = await Promise.all([
+  const [{ isEnabled: isDraft }, home, schedule, faqs, activities, lodges, reviews] = await Promise.all([
     draftMode(),
     getHome(),
     getSchedule(),
     getFaqs(),
     getActivities(),
-    getShifts(),
     getLodges(),
     getReviews(),
   ]);
@@ -466,33 +464,6 @@ function Activity({ icon, name, desc }: { icon: string; name: string; desc: stri
       </svg>
       <div className="act-name">{name}</div>
       <div className="act-desc">{desc}</div>
-    </div>
-  );
-}
-
-type ShiftProps = {
-  num: number;
-  dates: [string, string];
-  theme: string;
-  spotsTotal: number;
-  left: number;
-  soldOut: boolean;
-};
-
-function Shift({ num, dates, theme, spotsTotal, left, soldOut }: ShiftProps) {
-  return (
-    <div className="shift">
-      <div className="shift-num">{num}</div>
-      <div className="shift-dates">
-        {dates[0]}
-        <br />
-        {dates[1]}
-      </div>
-      <div className="shift-theme">{theme}</div>
-      <div className="shift-spots">
-        <span>{spotsTotal} мест</span>
-        {soldOut ? <span className="spots-sold">sold out</span> : <span className="spots-left">свободно {left}</span>}
-      </div>
     </div>
   );
 }
