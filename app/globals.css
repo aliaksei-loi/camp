@@ -953,10 +953,9 @@ section.belt {
     gap: 6px;
 }
 .schedule-item {
-    display: grid;
-    grid-template-columns: 60px 1fr;
-    gap: 6px 12px;
-    align-items: baseline;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
     padding: 8px 0;
     border-bottom: 1px dashed rgba(185, 74, 42, 0.2);
 }
@@ -964,8 +963,6 @@ section.belt {
     border-bottom: none;
 }
 .schedule-item-time {
-    grid-column: 1;
-    grid-row: 1;
     font-size: 12px;
     font-weight: 700;
     color: var(--c-rust);
@@ -973,15 +970,11 @@ section.belt {
     white-space: nowrap;
 }
 .schedule-item-title {
-    grid-column: 2;
-    grid-row: 1;
     font-size: 15px;
     font-weight: 700;
     color: var(--c-ink);
 }
 .schedule-item-desc {
-    grid-column: 2;
-    grid-row: 2;
     font-size: 13px;
     color: var(--c-ink-2);
     line-height: 1.4;
