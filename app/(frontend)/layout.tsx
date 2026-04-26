@@ -80,9 +80,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       data-palette="blue"
       data-type="handwritten"
       data-density="roomy"
+      data-theme="light"
+      data-theme-mode="system"
       className={`${gloria.variable} ${nunito.variable} ${dmSerif.variable} ${bricolage.variable}`}
     >
       <body>
+        <script
+          // Pre-hydration: resolve theme before first paint to avoid FOUC.
+          // Reads `belcreation-theme-mode` from localStorage; resolves
+          // `system` via matchMedia. Writes both data-theme (resolved)
+          // and data-theme-mode (chosen) on <html>.
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var k='belcreation-theme-mode';var m=localStorage.getItem(k);if(m!=='light'&&m!=='dark'&&m!=='system'){m='system';}var r=m;if(m==='system'){r=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var d=document.documentElement;d.setAttribute('data-theme',r);d.setAttribute('data-theme-mode',m);}catch(e){}})();",
+          }}
+        />
         <Nav
           scrollLinks={nav.scrollLinks}
           pinnedLink={nav.pinnedLink ?? null}

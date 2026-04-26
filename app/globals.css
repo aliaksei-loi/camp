@@ -3156,3 +3156,95 @@ div[data-ph] {
         transform: none;
     }
 }
+
+/* ===========================================================
+   Theme: dark
+   Phase 1 — base surfaces (body, text, primary/accent, common
+   container backgrounds). Per-component dark coverage lives in
+   phase 2. Single dark variant — independent of data-palette.
+   =========================================================== */
+
+[data-theme="dark"] {
+    /* Core paper/ink — invert. Near-black surfaces, near-white text. */
+    --c-paper: #16110d;
+    --c-cream: #1f1812;
+    --c-cream-2: #2a201a;
+    --c-ink: #f4ece0;
+    --c-ink-2: #cdbfae;
+
+    /* Brand rust stays warm but lifts so it reads on dark surfaces. */
+    --c-rust: #e26a45;
+    --c-rust-deep: #f08a64;
+
+    /* Accent / secondary brand colors — desaturated for dark contrast. */
+    --c-coral: #d96a6a;
+    --c-salmon: #d9866a;
+    --c-blue: #6b8caf;
+    --c-blue-deep: #4a6f95;
+    --c-lemon: #c7b370;
+    --c-lime: #9aa05c;
+
+    /* Semantic tokens — re-resolve so palette overrides still work
+       even though dark uses a single variant. */
+    --primary: var(--c-blue);
+    --primary-deep: var(--c-blue-deep);
+    --accent: var(--c-coral);
+}
+
+/* ThemeToggle — single cycle button placed in the topbar. */
+.theme-toggle {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1.5px solid rgba(251, 243, 217, 0.4);
+    border-radius: 999px;
+    color: var(--c-cream);
+    cursor: pointer;
+    padding: 0;
+    transition:
+        background 0.15s,
+        border-color 0.15s,
+        color 0.15s;
+}
+.theme-toggle:hover {
+    background: rgba(251, 243, 217, 0.15);
+    border-color: var(--c-cream);
+}
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--c-cream);
+    outline-offset: 2px;
+}
+.theme-toggle-icon {
+    display: inline-flex;
+    width: 18px;
+    height: 18px;
+}
+.theme-toggle-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Drawer mirror — sits above the Tweaks row. */
+.mobile-drawer-theme {
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-start;
+}
+.mobile-drawer-theme .theme-toggle {
+    color: var(--c-rust);
+    border-color: var(--c-rust);
+}
+.mobile-drawer-theme .theme-toggle:hover {
+    background: rgba(185, 74, 42, 0.08);
+}
+[data-theme="dark"] .mobile-drawer-theme .theme-toggle {
+    color: var(--c-ink);
+    border-color: var(--c-ink-2);
+}
+[data-theme="dark"] .mobile-drawer-theme .theme-toggle:hover {
+    background: rgba(244, 236, 224, 0.08);
+}
