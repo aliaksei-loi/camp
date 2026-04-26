@@ -22,14 +22,16 @@ const LABEL: Record<Mode, string> = {
 const isMode = (v: unknown): v is Mode =>
   v === "light" || v === "system" || v === "dark";
 
-const readStoredMode = (): Mode => {
-  if (typeof window === "undefined") return "system";
-  try {
-    const v = window.localStorage.getItem(STORAGE_KEY);
-    return isMode(v) ? v : "system";
-  } catch {
-    return "system";
-  }
+// Client snapshot — reads `data-theme-mode` written on <html> by the
+// pre-hydration <script>. The script reads localStorage synchronously
+// before React renders, so the attribute is already correct. Sourcing
+// from the DOM (rather than localStorage) eliminates the first-paint
+// icon swap for returning users with stored light/dark and keeps the
+// SSR snapshot consistent with the first client snapshot.
+const readDomMode = (): Mode => {
+  if (typeof document === "undefined") return "system";
+  const v = document.documentElement.getAttribute("data-theme-mode");
+  return isMode(v) ? v : "system";
 };
 
 const resolveSystem = (): Resolved => {
@@ -61,12 +63,17 @@ const subscribe = (cb: () => void): (() => void) => {
   };
 };
 
+// SSR snapshot — server has no DOM/localStorage; <html> is rendered
+// with `data-theme-mode="system"` so that's what the icon must show
+// for the SSR pass. The actual displayed icon on hydrate is taken
+// from `readDomMode` (post-pre-hydration-script), which keeps the
+// SSR HTML and the first client paint in agreement.
 const getServerSnapshot = (): Mode => "system";
 
 export function ThemeToggle() {
   const mode = useSyncExternalStore<Mode>(
     subscribe,
-    readStoredMode,
+    readDomMode,
     getServerSnapshot,
   );
 
