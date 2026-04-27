@@ -42,11 +42,32 @@ const resolveSystem = (): Resolved => {
     : "light";
 };
 
+// Surface colors that match `--c-paper` for each resolved theme.
+// Kept in sync with the dark-token override in `app/globals.css`.
+const PAPER_COLOR: Record<Resolved, string> = {
+  light: "#fffbef",
+  dark: "#16110d",
+};
+
+const syncMetaThemeColor = (resolved: Resolved): void => {
+  if (typeof document === "undefined") return;
+  let meta = document.querySelector<HTMLMetaElement>(
+    'meta[name="theme-color"]',
+  );
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.setAttribute("name", "theme-color");
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute("content", PAPER_COLOR[resolved]);
+};
+
 const applyTheme = (mode: Mode): void => {
   const resolved: Resolved = mode === "system" ? resolveSystem() : mode;
   const root = document.documentElement;
   root.setAttribute("data-theme", resolved);
   root.setAttribute("data-theme-mode", mode);
+  syncMetaThemeColor(resolved);
 };
 
 // Custom event the toggle dispatches after mutating localStorage so any
@@ -63,11 +84,14 @@ const subscribe = (cb: () => void): (() => void) => {
   };
 };
 
-// SSR snapshot — server has no DOM/localStorage; <html> is rendered
-// with `data-theme-mode="system"` so that's what the icon must show
-// for the SSR pass. The actual displayed icon on hydrate is taken
-// from `readDomMode` (post-pre-hydration-script), which keeps the
-// SSR HTML and the first client paint in agreement.
+// SSR snapshot — on the server there is no DOM and no localStorage,
+// so we return the literal `"system"` (which matches the static
+// `data-theme-mode="system"` rendered into the server HTML). React's
+// initial client render uses this same snapshot for hydration; on the
+// next pass `useSyncExternalStore` calls `readDomMode`, which picks up
+// any value the pre-hydration script wrote to <html>. The pre-hydration
+// script runs before React hydrates, so the visible icon is correct on
+// first paint and there is no SSR/client snapshot mismatch.
 const getServerSnapshot = (): Mode => "system";
 
 export function ThemeToggle() {
@@ -86,10 +110,9 @@ export function ThemeToggle() {
 
     const mql = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = () => {
-      document.documentElement.setAttribute(
-        "data-theme",
-        mql.matches ? "dark" : "light",
-      );
+      const resolved: Resolved = mql.matches ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", resolved);
+      syncMetaThemeColor(resolved);
     };
     if (typeof mql.addEventListener === "function") {
       mql.addEventListener("change", onChange);
