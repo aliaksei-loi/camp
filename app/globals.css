@@ -1323,143 +1323,6 @@ section.belt {
     text-transform: uppercase;
 }
 
-/* Tweaks */
-#tweaks-panel {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    width: 280px;
-    background: var(--c-paper);
-    border: 2px solid var(--c-rust);
-    border-radius: var(--radius);
-    box-shadow: 6px 6px 0 var(--c-rust);
-    z-index: 1000;
-    font-family: var(--font-body);
-    color: var(--c-ink);
-    overflow: hidden;
-    display: none;
-}
-#tweaks-panel.open {
-    display: block;
-}
-.tweaks-head {
-    padding: 14px 18px;
-    background: var(--c-coral);
-    color: var(--c-cream);
-    font-family: var(--font-display);
-    font-size: 22px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid var(--c-rust);
-}
-.tweaks-close {
-    background: none;
-    border: 1.5px solid var(--c-cream);
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    color: var(--c-cream);
-    cursor: pointer;
-    line-height: 1;
-    padding: 0;
-    font-size: 14px;
-}
-.tweaks-body {
-    padding: 16px 18px 20px;
-    max-height: 70vh;
-    overflow-y: auto;
-}
-.tweak-group {
-    margin-bottom: 18px;
-}
-.tweak-group:last-child {
-    margin-bottom: 0;
-}
-.tweak-label {
-    font-size: 10.5px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    font-weight: 800;
-    color: var(--c-rust-deep);
-    margin-bottom: 8px;
-    display: block;
-}
-.tweak-opts {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-}
-.tweak-opts button {
-    flex: 1;
-    min-width: 60px;
-    background: var(--c-cream);
-    border: 1.5px solid var(--c-rust);
-    border-radius: 8px;
-    padding: 8px 10px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--c-ink);
-    cursor: pointer;
-    transition: all 0.12s;
-    font-family: inherit;
-}
-.tweak-opts button:hover {
-    background: var(--c-cream-2);
-}
-.tweak-opts button.on {
-    background: var(--c-rust);
-    color: var(--c-cream);
-}
-.swatch {
-    width: 36px;
-    height: 36px;
-    flex: 0 0 auto;
-    border-radius: 50%;
-    border: 2px solid var(--c-rust);
-    padding: 0;
-    cursor: pointer;
-    position: relative;
-}
-.swatch.on {
-    outline: 3px solid var(--c-ink);
-    outline-offset: 2px;
-}
-.swatch-blue {
-    background: #bdd8f1;
-}
-.swatch-coral {
-    background: #f38081;
-}
-.swatch-lemon {
-    background: #efd780;
-}
-.swatch-salmon {
-    background: #f79977;
-}
-.swatch-lime {
-    background: #c8ce72;
-}
-
-.tweaks-open-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 999;
-    background: var(--c-rust);
-    color: var(--c-cream);
-    border: 2px solid var(--c-rust);
-    border-radius: 999px;
-    padding: 10px 16px;
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    cursor: pointer;
-    box-shadow: 3px 3px 0 var(--c-ink);
-    font-family: var(--font-body);
-}
-
 /* ===== About page ===== */
 .about-hero {
     padding: 56px 24px 24px;
@@ -2698,31 +2561,6 @@ section.belt {
     color: var(--c-rust);
     border-color: var(--c-cream);
 }
-.mobile-drawer-tweaks {
-    margin-top: 16px;
-    padding: 14px 16px;
-    min-height: 48px;
-    background: var(--c-cream);
-    color: var(--c-rust);
-    border: 1.5px solid var(--c-cream);
-    border-radius: 999px;
-    font-family: var(--font-body);
-    font-size: 13px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    font-weight: 800;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-}
-
-/* Hide floating Tweaks FAB on mobile — moved into drawer */
-.tweaks-open-btn {
-    display: none;
-}
-
 /* Mobile marquee */
 .marquee-strip {
     padding: 8px 0;
@@ -2747,7 +2585,7 @@ section.belt {
     height: 36px;
 }
 
-/* Mobile hero tweaks */
+/* Mobile hero sticker */
 .sticker {
     width: 84px;
     height: 84px;
@@ -2773,8 +2611,7 @@ section.belt {
 /* Mobile tap targets ≥ 44px */
 .chip,
 .g-filter,
-.lodge-link,
-.tweak-opts button {
+.lodge-link {
     min-height: 44px;
 }
 .faq-toggle {
@@ -2807,11 +2644,6 @@ section.belt {
 }
 .lightbox-img {
     aspect-ratio: 3/4;
-}
-
-/* Safe-area for sticky/fixed bottom elements */
-.tweaks-open-btn {
-    padding-bottom: max(10px, env(safe-area-inset-bottom));
 }
 
 /* CLS: give canvas placeholders a default aspect-ratio (div-only; spans stay inline) */
@@ -2897,9 +2729,6 @@ div[data-ph] {
     }
     .mobile-drawer {
         display: none !important;
-    }
-    .tweaks-open-btn {
-        display: inline-flex;
     }
 
     .marquee-strip {
@@ -2998,8 +2827,7 @@ div[data-ph] {
 
     .chip,
     .g-filter,
-    .lodge-link,
-    .tweak-opts button {
+    .lodge-link {
         min-height: 0;
     }
     .faq-toggle {
@@ -3291,9 +3119,9 @@ div[data-ph] {
     height: 100%;
 }
 
-/* Drawer mirror — sits above the Tweaks row. The drawer panel keeps
-   its rust background in both light and dark, so the mirrored toggle
-   uses cream chrome there (same as the topbar). */
+/* Drawer mirror — the drawer panel keeps its rust background in both
+   light and dark, so the mirrored toggle uses cream chrome there (same
+   as the topbar). */
 .mobile-drawer-theme {
     margin-top: 8px;
     display: flex;
@@ -3447,10 +3275,6 @@ div[data-ph] {
     background: #f4ece0;
     color: var(--c-rust);
 }
-[data-theme="dark"] .tweaks-open-btn {
-    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.55);
-}
-
 /* --- Hero ---------------------------------------------------------- */
 [data-theme="dark"] .hero-v3 .hero-right .hero-desc {
     /* Original used rgba(255,251,239,0.9) — paper-cream literal.
@@ -3673,12 +3497,6 @@ div[data-ph] {
     color: var(--c-rust);
     border-color: #f4ece0;
 }
-[data-theme="dark"] .mobile-drawer-tweaks {
-    background: #f4ece0;
-    color: var(--c-rust);
-    border-color: #f4ece0;
-}
-
 /* --- Booking page / forms ----------------------------------------- */
 [data-theme="dark"] .booking-wrap {
     box-shadow: 6px 6px 0 var(--c-rust);
@@ -3726,13 +3544,6 @@ div[data-ph] {
 [data-theme="dark"] .insta-strip p {
     color: rgba(244, 236, 224, 0.85);
 }
-
-/* --- Tweaks panel chrome ------------------------------------------ */
-[data-theme="dark"] #tweaks-panel {
-    box-shadow: 6px 6px 0 var(--c-rust);
-}
-/* .tweak-opts button cream bg + ink text + rust border — all token-driven.
-   .swatch.on outline uses --c-ink which is now cream — fine for visibility. */
 
 /* ===========================================================
    Theme transition

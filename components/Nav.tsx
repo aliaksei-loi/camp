@@ -132,16 +132,6 @@ export function Nav({ scrollLinks, pinnedLink, marqueeItems, brandLabel, logoUrl
           <div className="mobile-drawer-theme">
             <ThemeToggle />
           </div>
-          <button
-            type="button"
-            className="mobile-drawer-tweaks"
-            onClick={() => {
-              close();
-              window.dispatchEvent(new Event("tweaks:open"));
-            }}
-          >
-            ✎ Tweaks
-          </button>
         </div>
       </div>
       {marqueeItems.length > 0 && (

@@ -4,7 +4,6 @@ import "../globals.css";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { IconSprite } from "@/components/IconSprite";
-import { Tweaks } from "@/components/Tweaks";
 import { PlaceholderFiller } from "@/components/PlaceholderFiller";
 import { getFooter, getNav, getSiteSettings } from "@/lib/payload/fetchers";
 
@@ -123,7 +122,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           bottomLeft={footer.bottomLeft ?? null}
           bottomRight={footer.bottomRight ?? null}
         />
-        {process.env.NODE_ENV !== "production" && <Tweaks />}
         <PlaceholderFiller />
       </body>
     </html>
