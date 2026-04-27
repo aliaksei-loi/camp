@@ -84,15 +84,11 @@ const subscribe = (cb: () => void): (() => void) => {
   };
 };
 
-// SSR snapshot — on the server there is no DOM and no localStorage,
-// so we return the literal `"system"` (which matches the static
-// `data-theme-mode="system"` rendered into the server HTML). React's
-// initial client render uses this same snapshot for hydration; on the
-// next pass `useSyncExternalStore` calls `readDomMode`, which picks up
-// any value the pre-hydration script wrote to <html>. The pre-hydration
-// script runs before React hydrates, so the visible icon is correct on
-// first paint and there is no SSR/client snapshot mismatch.
-const getServerSnapshot = (): Mode => "system";
+// SSR snapshot — must match the static `data-theme-mode` rendered into
+// the server HTML (`light`). On the client, the pre-hydration script
+// writes the resolved mode to <html> before React hydrates, and the
+// next `useSyncExternalStore` pass picks it up via `readDomMode`.
+const getServerSnapshot = (): Mode => "light";
 
 export function ThemeToggle() {
   const mode = useSyncExternalStore<Mode>(
@@ -156,27 +152,39 @@ export function ThemeToggle() {
 
 function SunIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="4.2" fill="currentColor" />
-      <g stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <path d="M12 2.5 L12 5" />
-        <path d="M12 19 L12 21.5" />
-        <path d="M2.5 12 L5 12" />
-        <path d="M19 12 L21.5 12" />
-        <path d="M5.2 5.2 L7 7" />
-        <path d="M17 17 L18.8 18.8" />
-        <path d="M5.2 18.8 L7 17" />
-        <path d="M17 7 L18.8 5.2" />
-      </g>
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="3.6" fill="currentColor" stroke="none" />
+      <path d="M12 2.6v2" />
+      <path d="M12 19.4v2" />
+      <path d="M2.6 12h2" />
+      <path d="M19.4 12h2" />
+      <path d="M5.3 5.3l1.4 1.4" />
+      <path d="M17.3 17.3l1.4 1.4" />
+      <path d="M5.3 18.7l1.4-1.4" />
+      <path d="M17.3 6.7l1.4-1.4" />
     </svg>
   );
 }
 
 function MoonIcon() {
+  // Tilted crescent + a small star — a hand-warm "night at camp" glyph.
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
       <path
-        d="M20 14.5 A 8 8 0 1 1 9.5 4 A 6.5 6.5 0 0 0 20 14.5 Z"
+        d="M20.5 14.6A7.5 7.5 0 1 1 9.4 3.5a8.6 8.6 0 0 0 11.1 11.1Z"
+        fill="currentColor"
+      />
+      <path
+        d="M17.7 5.2 18 6.6l1.4.3-1.4.3-.3 1.4-.3-1.4-1.4-.3 1.4-.3Z"
         fill="currentColor"
       />
     </svg>
@@ -184,18 +192,20 @@ function MoonIcon() {
 }
 
 function SystemIcon() {
-  // A circle split light/dark — universal "auto" glyph.
+  // Laptop silhouette — universally reads as "follow the device".
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <circle
-        cx="12"
-        cy="12"
-        r="8.5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
-      <path d="M12 3.5 A 8.5 8.5 0 0 1 12 20.5 Z" fill="currentColor" />
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="4.5" width="18" height="11" rx="1.6" />
+      <path d="M2 18.5h20" />
     </svg>
   );
 }

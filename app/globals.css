@@ -383,6 +383,13 @@ section.belt {
     object-fit: cover;
     object-position: center;
 }
+/* On phones, drop the 3:2 crop and use the photo's native 16:9 framing
+   so the "belcreation" wood sign on the left edge stays in frame. */
+@media (max-width: 767.98px) {
+    .hero-photo {
+        aspect-ratio: 16 / 9;
+    }
+}
 .hero-right {
     padding: 28px 22px;
     position: relative;
@@ -3180,6 +3187,14 @@ div[data-ph] {
         border-color 0.15s,
         color 0.15s;
 }
+/* Mobile topbar is brand + pinned CTA + burger; the theme toggle would
+   crowd 375px. It is mirrored inside the drawer (`.mobile-drawer-theme`)
+   so we drop it from the topbar on phones. */
+@media (max-width: 767.98px) {
+    .topbar > .theme-toggle {
+        display: none;
+    }
+}
 .theme-toggle:hover {
     background: rgba(251, 243, 217, 0.15);
     border-color: var(--c-cream);
@@ -3325,7 +3340,10 @@ div[data-ph] {
     /* In light, the offset shadow uses var(--c-ink) (deep brown).
        In dark, --c-ink becomes near-cream, which makes the offset
        glow ghostly on dark surfaces. Swap to a darker shadow so the
-       button keeps its hand-drawn lift. */
+       button keeps its hand-drawn lift. Also pin the label to literal
+       warm cream — var(--c-cream) flips to near-black in dark, which
+       would hide the label against the still-warm rust fill. */
+    color: #f4ece0;
     box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.55);
 }
 [data-theme="dark"] .btn:hover {
@@ -3335,7 +3353,21 @@ div[data-ph] {
     box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.55);
 }
 [data-theme="dark"] .btn.ghost {
-    box-shadow: 3px 3px 0 var(--c-rust);
+    /* Ghost on dark body — the rust token is bright enough on near-black.
+       Lift the offset shadow a touch with a translucent rust so the
+       hand-drawn lift survives and doesn't dissolve into the surface. */
+    color: var(--c-rust-deep);
+    border-color: var(--c-rust-deep);
+    box-shadow: 3px 3px 0 var(--c-rust-translucent);
+}
+[data-theme="dark"] .btn.ghost:hover {
+    background: var(--c-rust-translucent-soft);
+}
+[data-theme="dark"] .btn.cream {
+    /* .btn.cream pins bg to var(--c-cream) which inverts to near-black.
+       Restore the warm cream pairing. */
+    background: #f4ece0;
+    color: var(--c-rust);
 }
 [data-theme="dark"] .tweaks-open-btn {
     box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.55);
@@ -3346,6 +3378,32 @@ div[data-ph] {
     /* Original used rgba(255,251,239,0.9) — paper-cream literal.
        In dark, --c-coral bg is desaturated; map to the cream token. */
     color: rgba(244, 236, 224, 0.92);
+}
+/* Desktop hero-v1 overlays the title on the photo with a dark scrim and
+   pins to var(--c-cream). In dark that token flips to near-black, making
+   the hero title invisible against the still-dark photo. Pin to literal
+   warm cream so the title keeps its bright readout, and strengthen the
+   text-shadow so the body copy reads against any photo. */
+@media (min-width: 1024px) {
+    [data-theme="dark"] .hero-v1 .hero-title,
+    [data-theme="dark"] .hero-v1 .hero-tag {
+        color: #f4ece0;
+        text-shadow: 0 2px 22px rgba(0, 0, 0, 0.55);
+    }
+    [data-theme="dark"] .hero-v1 .hero-desc {
+        color: rgba(244, 236, 224, 0.96);
+        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
+    }
+    /* Ghost CTA on the photo — pin to cream so the outline survives the
+       token inversion. */
+    [data-theme="dark"] .hero-v1 .btn.ghost {
+        color: #f4ece0;
+        border-color: #f4ece0;
+        box-shadow: 3px 3px 0 rgba(244, 236, 224, 0.55);
+    }
+    [data-theme="dark"] .hero-v1 .btn.ghost:hover {
+        background: rgba(244, 236, 224, 0.12);
+    }
 }
 
 /* --- Cards / lodge / values --------------------------------------- */
@@ -3383,6 +3441,13 @@ div[data-ph] {
 /* The salmon section bg is already remapped via --c-salmon. The body
    inherits paper/cream; what we need to fix are the hardcoded rust
    rgba()s that draw row separators, hover halos, and tab chrome. */
+/* Schedule head text pins to var(--c-cream) so it reads cream on the
+   salmon section. In dark, c-cream flips near-black on dim-salmon —
+   restore to warm cream literal. */
+[data-theme="dark"] .schedule-head h2,
+[data-theme="dark"] .schedule-period {
+    color: #f4ece0;
+}
 [data-theme="dark"] .schedule-acc {
     box-shadow: 0 24px 48px -32px rgba(0, 0, 0, 0.7);
 }
@@ -3411,9 +3476,29 @@ div[data-ph] {
     border-top-color: rgba(226, 106, 69, 0.4);
 }
 
+/* --- Hero sticker (sticky-note tag) ------------------------------- */
+/* In light: lemon disc + rust-deep ink + rust dashed border — a bright
+   sticky-note. In dark, --c-lemon dims to muted olive and --c-rust-deep
+   brightens to coral, collapsing the disc into a smudgy brown blot.
+   Pin to literal brand values so the sticker keeps its sunny pop. */
+[data-theme="dark"] .sticker {
+    background: #efd780;
+    color: #8e3619;
+    border-color: #b94a2a;
+}
+
 /* --- Quiz / accom dashed borders ---------------------------------- */
 /* .quiz-box uses a token-driven dashed rust border and no box-shadow,
    so dark inherits cleanly via tokens — no override needed. */
+/* The .quiz-pill pairs blue bg + rust text. In dark, --c-blue dims to
+   slate-blue (#6b8caf) and --c-rust brightens to coral — the pair drops
+   to ~3:1 contrast and the pill reads as a smudge. Flip to warm-cream
+   bg so the rust label snaps back to a clear chip. */
+[data-theme="dark"] .quiz-pill {
+    background: #f4ece0;
+    color: var(--c-rust);
+    border-color: var(--c-rust);
+}
 
 /* --- FAQ ----------------------------------------------------------- */
 /* .faq-item paper bg → near-black via tokens, already legible. */
@@ -3478,12 +3563,17 @@ div[data-ph] {
     color: var(--c-rust);
     border-color: #f4ece0;
 }
-@media (max-width: 767.98px) {
-    [data-theme="dark"] .topbar-link-pinned {
-        background: #f4ece0;
-        color: var(--c-rust);
-        border-color: #f4ece0;
-    }
+/* Pinned CTA pill: keep warm-cream-on-rust at every breakpoint. The base
+   .topbar-link-pinned uses var(--c-cream) which inverts to near-black in
+   dark, making the pill vanish into the topbar. */
+[data-theme="dark"] .topbar-link-pinned {
+    background: #f4ece0;
+    color: var(--c-rust);
+    border-color: #f4ece0;
+}
+[data-theme="dark"] .topbar-link-pinned:hover {
+    background: #fff8eb;
+    border-color: #fff8eb;
 }
 [data-theme="dark"] .topbar-menu-btn {
     color: #f4ece0;
@@ -3557,13 +3647,6 @@ div[data-ph] {
 /* --- Insta strip --------------------------------------------------- */
 [data-theme="dark"] .insta-strip p {
     color: rgba(244, 236, 224, 0.85);
-}
-
-/* --- Hero v1 desktop overlay — text on photo --------------------- */
-@media (min-width: 1024px) {
-    [data-theme="dark"] .hero-v1 .hero-desc {
-        color: rgba(244, 236, 224, 0.92);
-    }
 }
 
 /* --- Tweaks panel chrome ------------------------------------------ */

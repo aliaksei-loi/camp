@@ -85,7 +85,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       data-type="handwritten"
       data-density="roomy"
       data-theme="light"
-      data-theme-mode="system"
+      data-theme-mode="light"
       className={`${gloria.variable} ${nunito.variable} ${dmSerif.variable} ${bricolage.variable}`}
     >
       <body>
@@ -102,7 +102,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           // the initial mode resolution.
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{var k='belcreation-theme-mode';var m=localStorage.getItem(k);if(m!=='light'&&m!=='dark'&&m!=='system'){m='system';}var r=m;if(m==='system'){r=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var d=document.documentElement;d.setAttribute('data-theme',r);d.setAttribute('data-theme-mode',m);var c=r==='dark'?'#16110d':'#fffbef';var t=document.querySelector('meta[name=\"theme-color\"]');if(!t){t=document.createElement('meta');t.setAttribute('name','theme-color');document.head.appendChild(t);}t.setAttribute('content',c);var raf=window.requestAnimationFrame||function(f){return setTimeout(f,0);};raf(function(){raf(function(){d.setAttribute('data-theme-ready','');});});}catch(e){}})();",
+              "(function(){try{var k='belcreation-theme-mode';var m=localStorage.getItem(k);if(m!=='light'&&m!=='dark'&&m!=='system'){m='light';}var r=m;if(m==='system'){r=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var d=document.documentElement;d.setAttribute('data-theme',r);d.setAttribute('data-theme-mode',m);var c=r==='dark'?'#16110d':'#fffbef';var t=document.querySelector('meta[name=\"theme-color\"]');if(!t){t=document.createElement('meta');t.setAttribute('name','theme-color');document.head.appendChild(t);}t.setAttribute('content',c);var raf=window.requestAnimationFrame||function(f){return setTimeout(f,0);};raf(function(){raf(function(){d.setAttribute('data-theme-ready','');});});}catch(e){}})();",
           }}
         />
         <Nav
