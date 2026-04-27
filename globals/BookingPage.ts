@@ -39,5 +39,15 @@ export const BookingPage: GlobalConfig = {
         description: "Параграф под H1 на /booking.",
       },
     },
+    {
+      name: "consentText",
+      type: "textarea",
+      defaultValue:
+        "Согласен с условиями участия и политикой обработки персональных данных.",
+      admin: {
+        description:
+          "Текст рядом с обязательным чекбоксом согласия. Без отметки кнопка «Зарегистрироваться» неактивна.",
+      },
+    },
   ],
 };

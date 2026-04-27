@@ -381,7 +381,7 @@ section.belt {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: left;
 }
 /* On phones, drop the 3:2 crop and use the photo's native 16:9 framing
    so the "belcreation" wood sign on the left edge stays in frame. */
@@ -841,7 +841,9 @@ section.belt {
     font-weight: 700;
     letter-spacing: 0.02em;
     cursor: pointer;
-    transition: background 0.18s ease, color 0.18s ease;
+    transition:
+        background 0.18s ease,
+        color 0.18s ease;
 }
 .schedule-tab:hover:not(.is-active) {
     background: rgba(185, 74, 42, 0.08);
@@ -917,7 +919,10 @@ section.belt {
     align-items: center;
     justify-content: center;
     line-height: 1;
-    transition: background 0.2s ease, color 0.2s ease, transform 0.25s ease;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.25s ease;
     grid-column: 4;
 }
 .schedule-day.is-open .schedule-day-chevron {
@@ -1989,6 +1994,57 @@ section.belt {
     color: var(--c-rust);
 }
 
+.consent-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 24px;
+    padding: 12px 14px;
+    border: 1.5px dashed rgba(185, 74, 42, 0.3);
+    border-radius: var(--radius);
+    font-size: 13px;
+    color: var(--c-ink-2);
+    cursor: pointer;
+    line-height: 1.4;
+}
+.consent-row input[type="checkbox"] {
+    flex: none;
+    margin-top: 2px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--c-rust);
+    cursor: pointer;
+}
+
+.form-error {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: var(--radius);
+    background: rgba(185, 74, 42, 0.08);
+    border: 1.5px solid var(--c-rust);
+    color: var(--c-rust-deep);
+    font-size: 13px;
+    line-height: 1.45;
+}
+.form-error p {
+    margin: 0;
+}
+.form-error p + p {
+    margin-top: 6px;
+    color: var(--c-ink-2);
+}
+.form-error-contact a {
+    color: var(--c-rust);
+    text-decoration: underline;
+}
+
+.btn[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
 .summary-title {
     font-family: var(--font-display);
     color: var(--c-rust);
@@ -3024,8 +3080,13 @@ div[data-ph] {
 
 /* Sticker gently bobs to feel hand-drawn */
 @keyframes sticker-bob {
-    0%, 100% { transform: rotate(-8deg) translateY(0); }
-    50%      { transform: rotate(-5deg) translateY(-6px); }
+    0%,
+    100% {
+        transform: rotate(-8deg) translateY(0);
+    }
+    50% {
+        transform: rotate(-5deg) translateY(-6px);
+    }
 }
 .hero-sticker .sticker {
     animation: sticker-bob 4.5s ease-in-out infinite;
@@ -3068,12 +3129,22 @@ div[data-ph] {
 /* Scroll-driven reveal — zero-JS, uses `translate` so hover transforms stay free */
 @supports (animation-timeline: view()) {
     @keyframes reveal-up {
-        from { opacity: 0; translate: 0 28px; }
-        to   { opacity: 1; translate: 0 0; }
+        from {
+            opacity: 0;
+            translate: 0 28px;
+        }
+        to {
+            opacity: 1;
+            translate: 0 0;
+        }
     }
     @keyframes reveal-fade {
-        from { opacity: 0; }
-        to   { opacity: 1; }
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
     }
 
     .card,
