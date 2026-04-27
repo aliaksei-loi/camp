@@ -27,14 +27,22 @@ type Form = {
   interests: Set<string>;
   notes: string;
   source: string;
+  consent: boolean;
 };
+
+type ErrorContact = {
+  email: string | null;
+  telegram: string | null;
+  telegramUrl: string | null;
+} | null;
 
 type Props = {
   periodLabel: string;
   periodSub: string;
+  consentText: string;
 };
 
-export function BookingForm({ periodLabel, periodSub }: Props) {
+export function BookingForm({ periodLabel, periodSub, consentText }: Props) {
   const [form, setForm] = useState<Form>({
     name: "",
     surname: "",
@@ -46,8 +54,12 @@ export function BookingForm({ periodLabel, periodSub }: Props) {
     interests: new Set(),
     notes: "",
     source: SOURCES[0],
+    consent: false,
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [errorContact, setErrorContact] = useState<ErrorContact>(null);
 
   const step = (k: "adults" | "kids" | "babies", dir: number) => {
     setForm((f) => {
@@ -66,6 +78,61 @@ export function BookingForm({ periodLabel, periodSub }: Props) {
   };
 
   const total = form.adults + form.kids + form.babies;
+
+  const canSubmit =
+    !submitting &&
+    form.consent &&
+    form.name.trim().length > 0 &&
+    form.email.trim().length > 0;
+
+  const handleSubmit = async () => {
+    if (!canSubmit) return;
+    setSubmitting(true);
+    setErrorMsg(null);
+    setErrorContact(null);
+    try {
+      const res = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          surname: form.surname,
+          email: form.email,
+          phone: form.phone,
+          adults: form.adults,
+          kids: form.kids,
+          babies: form.babies,
+          interests: Array.from(form.interests),
+          notes: form.notes,
+          source: form.source,
+          consent: form.consent,
+        }),
+      });
+      const json = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+        contact?: ErrorContact;
+      };
+      if (!res.ok || !json.ok) {
+        setErrorMsg(json.error ?? "Не получилось отправить заявку.");
+        setErrorContact(json.contact ?? null);
+        setSubmitting(false);
+        return;
+      }
+      setSubmitted(true);
+      requestAnimationFrame(() => {
+        const el = document.querySelector(".booking-main");
+        if (el instanceof HTMLElement) {
+          window.scrollTo({ top: el.offsetTop - 40, behavior: "smooth" });
+        }
+      });
+    } catch {
+      setErrorMsg(
+        "Не удалось связаться с сервером. Проверьте интернет и попробуйте ещё раз.",
+      );
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="booking-main">
@@ -231,25 +298,54 @@ export function BookingForm({ periodLabel, periodSub }: Props) {
                 </select>
               </div>
 
+              <label className="consent-row">
+                <input
+                  type="checkbox"
+                  checked={form.consent}
+                  onChange={(e) => setForm({ ...form, consent: e.target.checked })}
+                />
+                <span>{consentText}</span>
+              </label>
+
+              {errorMsg && (
+                <div role="alert" className="form-error">
+                  <p>{errorMsg}</p>
+                  {errorContact && (errorContact.email || errorContact.telegram) && (
+                    <p className="form-error-contact">
+                      Если повторяется — напишите нам:
+                      {errorContact.telegram && (
+                        <>
+                          {" "}
+                          <a
+                            href={errorContact.telegramUrl ?? `https://t.me/${errorContact.telegram.replace(/^@/, "")}`}
+                          >
+                            {errorContact.telegram}
+                          </a>
+                        </>
+                      )}
+                      {errorContact.email && (
+                        <>
+                          {" · "}
+                          <a href={`mailto:${errorContact.email}`}>{errorContact.email}</a>
+                        </>
+                      )}
+                    </p>
+                  )}
+                </div>
+              )}
+
               <div className="submit-row">
                 <p className="terms-line">
-                  Нажимая «Зарегистрироваться», вы соглашаетесь с <a href="#">условиями участия</a>. Оплата участия —
-                  при заезде, предоплата не требуется.
+                  Оплата участия — при заезде, предоплата не требуется.
                 </p>
                 <button
                   type="button"
                   className="btn"
-                  onClick={() => {
-                    setSubmitted(true);
-                    requestAnimationFrame(() => {
-                      const el = document.querySelector(".booking-main");
-                      if (el instanceof HTMLElement) {
-                        window.scrollTo({ top: el.offsetTop - 40, behavior: "smooth" });
-                      }
-                    });
-                  }}
+                  disabled={!canSubmit}
+                  aria-busy={submitting}
+                  onClick={handleSubmit}
                 >
-                  Зарегистрироваться ✦
+                  {submitting ? "Отправляем…" : "Зарегистрироваться ✦"}
                 </button>
               </div>
             </>

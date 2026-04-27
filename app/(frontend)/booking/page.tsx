@@ -11,6 +11,9 @@ export default async function BookingPage() {
   const periodLabel = page.periodLabel ?? "";
   const periodSub = page.periodSub ?? "";
   const heroIntro = page.heroIntro ?? "";
+  const consentText =
+    page.consentText ??
+    "Согласен с условиями участия и политикой обработки персональных данных.";
 
   return (
     <>
@@ -28,7 +31,11 @@ export default async function BookingPage() {
         </div>
       </section>
 
-      <BookingForm periodLabel={periodLabel} periodSub={periodSub} />
+      <BookingForm
+        periodLabel={periodLabel}
+        periodSub={periodSub}
+        consentText={consentText}
+      />
     </>
   );
 }

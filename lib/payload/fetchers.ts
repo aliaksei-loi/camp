@@ -445,6 +445,7 @@ const BookingPageSchema = z.object({
   periodLabel: TextLike,
   periodSub: TextLike,
   heroIntro: TextLike,
+  consentText: TextLike,
 });
 
 export type BookingPage = z.infer<typeof BookingPageSchema>;
