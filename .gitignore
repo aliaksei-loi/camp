@@ -51,3 +51,4 @@ next-env.d.ts
 .env*.local
 .admin-credentials.local
 .worktrees/
+.ship/

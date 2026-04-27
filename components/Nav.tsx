@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type NavLinkDef = { label: string; href: string; id?: string | null };
 type PinnedLinkDef = { label?: string | null; href?: string | null } | null;
@@ -70,6 +71,7 @@ export function Nav({ scrollLinks, pinnedLink, marqueeItems, brandLabel, logoUrl
             {pinnedLink.label}
           </Link>
         )}
+        <ThemeToggle />
         <button
           type="button"
           className="topbar-menu-btn"
@@ -127,6 +129,9 @@ export function Nav({ scrollLinks, pinnedLink, marqueeItems, brandLabel, logoUrl
               </Link>
             ))}
           </nav>
+          <div className="mobile-drawer-theme">
+            <ThemeToggle />
+          </div>
           <button
             type="button"
             className="mobile-drawer-tweaks"
